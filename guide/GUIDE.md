@@ -48,8 +48,8 @@ Now that we have the node and near exporters up and running on the node, we have
 
 open `prometheus/prometheus.yml` and add an ip address of your node:
 
-`
-...
+```
+  ...
   - job_name: node
     scrape_interval: 5s
     static_configs:
@@ -59,8 +59,8 @@ open `prometheus/prometheus.yml` and add an ip address of your node:
     scrape_interval: 15s
     static_configs:
     - targets: ['<NODE_IP_ADDRESS>:9333']
-...
-`
+  ...
+```
 
 ## Run Prometheus on your server monitoring machine
 
@@ -89,25 +89,25 @@ sudo docker run -dit \
 
 Open in your favorite browser `http://localhost:3000`
 
-[](https://github.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image0.jpeg)
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/image0.png)
 
 login "admin"
 password "admin"
 
 Open `Near Node Exporter Full` dashboard
 
-[](https://github.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image1.png)
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image1.png)
 
-[](https://github.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image2.png)
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image2.png)
 
 ### Configure Alert in Grafana
 
 Add a telegram channel with your Telegram TokenId and ChannelId
 
-[](https://github.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image3.png)
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image3.png)
 
 Also add an alert when blocks did not produced during 5 minutes
 
-[](https://github.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image4.png)
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image4.png)
 
 Thats it!
