@@ -10,13 +10,14 @@ This service exports various metrics from Near node for consumption by [Promethe
 
 `sudo docker build -t near-prometheus-exporter .`
 
-
-    sudo docker run -dit \
-        --restart always \
-        --name near-exporter \
-        -p 9333:9333 \
-        masknetgoal634/near-prometheus-exporter:latest /dist/main -accountId <YOUR_POOL_ID>
-
+```
+sudo docker run -dit \
+    --restart always \
+    --name near-exporter \
+    --network=host \
+    -p 9333:9333 \
+    near-prometheus-exporter:latest /dist/main -accountId <YOUR_POOL_ID>
+```
 
 By default the exporter serves on `:9333` at `/metrics`.
 
