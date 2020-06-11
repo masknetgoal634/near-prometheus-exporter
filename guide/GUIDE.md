@@ -83,7 +83,7 @@ sudo docker run -dit \
     --restart always \
     --volume $(pwd)/grafana:/var/lib/grafana \
     --volume $(pwd)/grafana/provisioning:/etc/grafana/provisioning \
-    --user 0 \
+    --user 472 \
     --name grafana \
     -p 3000:3000 grafana/grafana
 ```
