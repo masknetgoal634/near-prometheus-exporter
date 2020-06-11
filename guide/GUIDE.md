@@ -75,7 +75,7 @@ sudo docker run -dti \
     --config.file=/etc/prometheus/prometheus.yml
 ```
 
-#### Run Grafana
+### Run Grafana
 
 ```
 sudo chown -R 472:472 grafana
