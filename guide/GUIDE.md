@@ -96,18 +96,18 @@ password "admin"
 
 Open `Near Node Exporter Full` dashboard
 
-![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image1.png)
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/image1.png)
 
-![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image2.png)
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/image2.png)
 
 ### Configure Alert in Grafana
 
 Add a telegram channel with your Telegram TokenId and ChannelId
 
-![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image3.png)
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/image3.png)
 
 Also add an alert when blocks did not produced during 5 minutes
 
-![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/blob/master/guide/img/image4.png)
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/image4.png)
 
-Thats it!
+Enjoy!
