@@ -4,11 +4,11 @@ This service exports various metrics from Near node for consumption by [Promethe
 
 ## Usage
 
-`git clone https://github.com/masknetgoal634/near-prometheus-exporter`
+    git clone https://github.com/masknetgoal634/near-prometheus-exporter
 
-`cd near-prometheus-exporter`
+    cd near-prometheus-exporter
 
-`sudo docker build -t near-prometheus-exporter .`
+    sudo docker build -t near-prometheus-exporter .
 
 ```
 sudo docker run -dit \
