@@ -20,11 +20,11 @@ Open 9100 port in your server firewall as Prometheus reads metrics on this port.
 
 ## Run Near Exporter on the Node
 
-`git clone https://github.com/masknetgoal634/near-prometheus-exporter`
+    git clone https://github.com/masknetgoal634/near-prometheus-exporter
 
-`cd near-prometheus-exporter`
+    cd near-prometheus-exporter
 
-`sudo docker build -t near-prometheus-exporter .`
+    sudo docker build -t near-prometheus-exporter .
 
 ```
 sudo docker run -dit \
@@ -43,9 +43,9 @@ Now that we have the node and near exporters up and running on the node, we have
 
 >You can run Prometheus server on your home computer or even on Raspberry Pi 
 
-`git clone https://github.com/masknetgoal634/near-prometheus-exporter`
+    git clone https://github.com/masknetgoal634/near-prometheus-exporter
 
-`cd near-prometheus-exporter/etc`
+    cd near-prometheus-exporter/etc
 
 open `prometheus/prometheus.yml` and add an ip address of your node:
 
