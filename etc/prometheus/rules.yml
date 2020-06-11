@@ -1,0 +1,11 @@
+groups:
+- name: ExporterDown
+  rules:
+  - alert: NodeDown
+    expr: up{job='Node'} == 0
+    for: 1m
+    labels:
+      severity: Error
+    annotations:
+      summary: "Node Explorer instance ($instance) down"
+      description: "NodeExporterDown"
