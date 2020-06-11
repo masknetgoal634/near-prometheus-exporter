@@ -30,8 +30,9 @@ Open 9100 port in your server firewall as Prometheus reads metrics on this port.
 sudo docker run -dit \
     --restart always \
     --name near-exporter \
+    --network=host \
     -p 9333:9333 \
-    masknetgoal634/near-prometheus-exporter:latest /dist/main -accountId <YOUR_POOL_ID>
+    near-prometheus-exporter:latest /dist/main -accountId <YOUR_POOL_ID>
 ```
 
 Open 9333 port in your server firewall as Prometheus reads metrics on this port.
