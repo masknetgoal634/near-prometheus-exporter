@@ -224,6 +224,7 @@ func (c *Client) ProducedBlocks(accountId string) (int, error) {
 		return 0, err
 	}
 	pb := 0
+	c.seatPrice = 0
 	for _, v := range r.Validators.CurrentValidators {
 		t := stringToInt64(v.Stake)
 		if c.seatPrice == 0 {
@@ -237,7 +238,7 @@ func (c *Client) ProducedBlocks(accountId string) (int, error) {
 			c.currentStake = t
 		}
 	}
-	return pb, err
+	return pb, nil
 }
 
 func (c *Client) ExpectedBlocks(accountId string) (int, error) {
