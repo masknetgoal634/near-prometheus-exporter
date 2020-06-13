@@ -159,4 +159,4 @@ When the peer connections will be below 5 you will see an alert in your email in
 
 Enjoy
 
-Updated Guide: 14.06.2020
+Updated: 13.06.2020
