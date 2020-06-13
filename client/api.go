@@ -54,7 +54,7 @@ type ValidatorsResult struct {
 		CurrentProposals []struct {
 			Validator
 		} `json:"current_proposals"`
-		EpochStartHeight int `json:"epoch_start_height"`
+		EpochStartHeight int64 `json:"epoch_start_height"`
 	} `json:"result_validators"`
 }
 
@@ -64,13 +64,16 @@ type Result struct {
 }
 
 type Client struct {
-	httpClient    *http.Client
-	Endpoint      string
-	lastCacheTime int64
-	cacheVals     *Result
-	cacheStatus   *Result
-	seatPrice     int64
-	currentStake  int64
+	httpClient       *http.Client
+	Endpoint         string
+	lastCacheTime    int64
+	cacheVals        *Result
+	cacheStatus      *Result
+	seatPrice        int64
+	currentStake     int64
+	versionNumber    string
+	versionBuild     string
+	epochStartHeight int64
 }
 
 func NewClient(endpoint string) *Client {
@@ -79,8 +82,10 @@ func NewClient(endpoint string) *Client {
 		Timeout: timeout,
 	}
 	return &Client{
-		Endpoint:   endpoint,
-		httpClient: httpClient,
+		Endpoint:      endpoint,
+		httpClient:    httpClient,
+		versionNumber: "0",
+		versionBuild:  "0",
 	}
 }
 
@@ -132,7 +137,7 @@ func (c *Client) do(method string, params interface{}) (string, error) {
 	return string(body), nil
 }
 
-func (c *Client) get(method string, variables interface{}) (*Result, error) {
+func (c *Client) Get(method string, variables interface{}) (*Result, error) {
 	res, err := c.do(method, variables)
 	if err != nil {
 		return nil, err
@@ -163,8 +168,10 @@ func (c *Client) Status() (*Result, error) {
 		return c.cacheStatus, nil
 	}
 	var err error
-	c.cacheStatus, err = c.get("status", nil)
+	c.cacheStatus, err = c.Get("status", nil)
 	c.lastCacheTime = time.Now().Unix()
+	c.versionNumber = c.cacheStatus.Status.Version.Version
+	c.versionBuild = c.cacheStatus.Status.Version.Build
 	return c.cacheStatus, err
 }
 
@@ -178,7 +185,8 @@ func (c *Client) Validators() (*Result, error) {
 		fmt.Println(err)
 	}
 	blockHeight := r.Status.SyncInfo.LatestBlockHeight
-	c.cacheVals, err = c.get("validators", []uint64{blockHeight})
+	c.cacheVals, err = c.Get("validators", []uint64{blockHeight})
+	c.epochStartHeight = c.cacheVals.Validators.EpochStartHeight
 	return c.cacheVals, err
 }
 
@@ -261,4 +269,16 @@ func (c *Client) SeatPrice() (int64, error) {
 
 func (c *Client) CurrentStake() (int64, error) {
 	return c.currentStake, nil
+}
+
+func (c *Client) VersionNumber() (string, error) {
+	return c.versionNumber, nil
+}
+
+func (c *Client) VersionBuild() (string, error) {
+	return c.versionBuild, nil
+}
+
+func (c *Client) EpochStartHeight() (int64, error) {
+	return c.epochStartHeight, nil
 }
