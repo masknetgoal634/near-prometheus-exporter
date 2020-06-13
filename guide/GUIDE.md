@@ -1,4 +1,4 @@
-# Monitor Near Node using Prometheus and Grafana
+# Monitoring The Near Node with Prometheus and Grafana 
 
 In this guide, you will learn how to setup Prometheus node exporter and [near exporter](https://github.com/masknetgoal634/near-prometheus-exporter) on a Near node to export metrics to the Prometheus server and monitor them with Grafana.
 
