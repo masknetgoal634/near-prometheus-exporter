@@ -2,7 +2,6 @@
   "annotations": {
     "list": [
       {
-        "$$hashKey": "object:1058",
         "builtIn": 1,
         "datasource": "-- Grafana --",
         "enable": true,
@@ -17,7 +16,7 @@
   "gnetId": 1860,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1591879195763,
+  "iteration": 1592068001314,
   "links": [],
   "panels": [
     {
@@ -44,7 +43,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
+        "h": 4,
         "w": 14,
         "x": 0,
         "y": 0
@@ -91,7 +90,7 @@
                 "value": null
               },
               {
-                "color": "red",
+                "color": "semi-dark-yellow",
                 "value": 80
               }
             ]
@@ -100,20 +99,20 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 3,
         "w": 3,
         "x": 14,
         "y": 0
       },
-      "id": 319,
+      "id": 335,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
-        "orientation": "auto",
+        "orientation": "vertical",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -122,7 +121,7 @@
       "pluginVersion": "7.0.3",
       "targets": [
         {
-          "expr": "near_sync_state",
+          "expr": "near_version_number",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -130,8 +129,97 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Syncing",
+      "title": "Version Number",
       "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 1,
+      "description": "System uptime",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "s",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 17,
+        "y": 0
+      },
+      "hideTimeOverride": true,
+      "id": 15,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": "s",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "{instance=\"35.227.135.233:9100\", job=\"node\"}",
+      "targets": [
+        {
+          "expr": "node_time_seconds{instance=~\"$node:$port\",job=~\"$job\"} - node_boot_time_seconds{instance=~\"$node:$port\",job=~\"$job\"}",
+          "intervalFactor": 2,
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "title": "Uptime",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
     },
     {
       "cacheTimeout": null,
@@ -161,7 +249,7 @@
       "gridPos": {
         "h": 2,
         "w": 2,
-        "x": 17,
+        "x": 20,
         "y": 0
       },
       "id": 14,
@@ -252,8 +340,8 @@
       "gridPos": {
         "h": 2,
         "w": 2,
-        "x": 19,
-        "y": 0
+        "x": 20,
+        "y": 2
       },
       "id": 75,
       "interval": null,
@@ -290,7 +378,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "node_memory_MemTotal_bytes{instance=\"127.0.0.1:9100\", job=\"node\"}",
+      "tableColumn": "node_memory_MemTotal_bytes{instance=\"35.227.135.233:9100\", job=\"node\"}",
       "targets": [
         {
           "expr": "node_memory_MemTotal_bytes{instance=~\"$node:$port\",job=~\"$job\"}",
@@ -313,276 +401,60 @@
       "valueName": "current"
     },
     {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "rgba(245, 54, 54, 0.9)",
-        "rgba(237, 129, 40, 0.89)",
-        "rgba(50, 172, 45, 0.97)"
-      ],
-      "datasource": "Prometheus",
-      "decimals": 0,
-      "description": "Total SWAP",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
         },
         "overrides": []
       },
-      "format": "bytes",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
       "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 21,
-        "y": 0
+        "h": 5,
+        "w": 3,
+        "x": 14,
+        "y": 3
       },
-      "id": 18,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
+      "id": 319,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
         }
-      ],
-      "maxDataPoints": 100,
-      "maxPerRow": 6,
-      "nullPointMode": "null",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "70%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
       },
-      "tableColumn": "node_memory_SwapTotal_bytes{instance=\"127.0.0.1:9100\", job=\"node\"}",
+      "pluginVersion": "7.0.3",
       "targets": [
         {
-          "expr": "node_memory_SwapTotal_bytes{instance=~\"$node:$port\",job=~\"$job\"}",
-          "intervalFactor": 1,
-          "refId": "A",
-          "step": 900
+          "expr": "near_sync_state",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
         }
       ],
-      "thresholds": "",
-      "title": "SWAP Total",
-      "type": "singlestat",
-      "valueFontSize": "50%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "rgba(245, 54, 54, 0.9)",
-        "rgba(237, 129, 40, 0.89)",
-        "rgba(50, 172, 45, 0.97)"
-      ],
-      "datasource": "Prometheus",
-      "decimals": 1,
-      "description": "System uptime",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "format": "s",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 4,
-        "x": 17,
-        "y": 2
-      },
-      "hideTimeOverride": true,
-      "id": 15,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "$$hashKey": "object:1094",
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "$$hashKey": "object:1095",
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "null",
-      "nullText": null,
-      "postfix": "s",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
-      },
-      "tableColumn": "{instance=\"127.0.0.1:9100\", job=\"node\"}",
-      "targets": [
-        {
-          "expr": "node_time_seconds{instance=~\"$node:$port\",job=~\"$job\"} - node_boot_time_seconds{instance=~\"$node:$port\",job=~\"$job\"}",
-          "intervalFactor": 2,
-          "refId": "A",
-          "step": 1800
-        }
-      ],
-      "thresholds": "",
-      "title": "Uptime",
-      "type": "singlestat",
-      "valueFontSize": "50%",
-      "valueMaps": [
-        {
-          "$$hashKey": "object:1097",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "rgba(50, 172, 45, 0.97)",
-        "rgba(237, 129, 40, 0.89)",
-        "rgba(245, 54, 54, 0.9)"
-      ],
-      "datasource": "Prometheus",
-      "decimals": 0,
-      "description": "Total RootFS",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "format": "bytes",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 21,
-        "y": 2
-      },
-      "id": 23,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "maxPerRow": 6,
-      "nullPointMode": "null",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
-      },
-      "tableColumn": "node_filesystem_size_bytes{device=\"/dev/sda2\", fstype=\"ext4\", instance=\"127.0.0.1:9100\", job=\"node\", mountpoint=\"/\"}",
-      "targets": [
-        {
-          "expr": "node_filesystem_size_bytes{instance=~\"$node:$port\",job=~\"$job\",mountpoint=\"/\",fstype!=\"rootfs\"}",
-          "format": "time_series",
-          "hide": false,
-          "intervalFactor": 1,
-          "refId": "A",
-          "step": 900
-        }
-      ],
-      "thresholds": "70,90",
-      "title": "RootFS Total",
-      "type": "singlestat",
-      "valueFontSize": "50%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Syncing",
+      "type": "stat"
     },
     {
       "datasource": null,
@@ -608,10 +480,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 7,
         "x": 0,
-        "y": 6
+        "y": 4
       },
       "id": 329,
       "options": {
@@ -664,10 +536,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 7,
         "x": 7,
-        "y": 6
+        "y": 4
       },
       "id": 323,
       "interval": "",
@@ -700,6 +572,244 @@
       "type": "stat"
     },
     {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "rgb(106, 207, 94)",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 17,
+        "y": 4
+      },
+      "id": 333,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "pluginVersion": "7.0.3",
+      "targets": [
+        {
+          "expr": "validator_active_total",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Active Validators",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 0,
+      "description": "Total SWAP",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "bytes",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 20,
+        "y": 4
+      },
+      "id": 18,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "maxPerRow": 6,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "70%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "node_memory_SwapTotal_bytes{instance=\"35.227.135.233:9100\", job=\"node\"}",
+      "targets": [
+        {
+          "expr": "node_memory_SwapTotal_bytes{instance=~\"$node:$port\",job=~\"$job\"}",
+          "intervalFactor": 1,
+          "refId": "A",
+          "step": 900
+        }
+      ],
+      "thresholds": "",
+      "title": "SWAP Total",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(50, 172, 45, 0.97)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(245, 54, 54, 0.9)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 0,
+      "description": "Total RootFS",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "bytes",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 20,
+        "y": 6
+      },
+      "id": 23,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "maxPerRow": 6,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "node_filesystem_size_bytes{device=\"/dev/sda1\", fstype=\"ext4\", instance=\"35.227.135.233:9100\", job=\"node\", mountpoint=\"/\"}",
+      "targets": [
+        {
+          "expr": "node_filesystem_size_bytes{instance=~\"$node:$port\",job=~\"$job\",mountpoint=\"/\",fstype!=\"rootfs\"}",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "refId": "A",
+          "step": 900
+        }
+      ],
+      "thresholds": "70,90",
+      "title": "RootFS Total",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
@@ -722,10 +832,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 6,
+        "w": 13,
         "x": 0,
-        "y": 11
+        "y": 8
       },
       "id": 325,
       "interval": "",
@@ -758,8 +868,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Produced / Expected Blocks",
-      "transparent": true,
+      "title": "Peoduced / Expected Blocks",
       "type": "gauge"
     },
     {
@@ -829,10 +938,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
-        "w": 7,
-        "x": 12,
-        "y": 11
+        "h": 6,
+        "w": 4,
+        "x": 13,
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 317,
@@ -926,13 +1035,155 @@
       }
     },
     {
+      "alert": {
+        "alertRuleTags": {},
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                20
+              ],
+              "type": "lt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "avg"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "5m",
+        "frequency": "1m",
+        "handler": 1,
+        "message": "Total Peer Connections is Bellow 20",
+        "name": "Peer Connections Total Alert",
+        "noDataState": "alerting",
+        "notifications": [
+          {
+            "uid": "uwSILBiMk"
+          }
+        ]
+      },
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 17,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 331,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "peer_connections_total",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "lt",
+          "value": 20
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Peer Connections Total",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "collapsed": false,
       "datasource": "Prometheus",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 14
       },
       "id": 261,
       "panels": [],
@@ -985,9 +1236,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
+        "w": 4,
         "x": 0,
-        "y": 20
+        "y": 15
       },
       "id": 20,
       "links": [],
@@ -1063,8 +1314,8 @@
       "gridPos": {
         "h": 4,
         "w": 3,
-        "x": 3,
-        "y": 20
+        "x": 4,
+        "y": 15
       },
       "id": 155,
       "links": [],
@@ -1140,8 +1391,8 @@
       "gridPos": {
         "h": 4,
         "w": 3,
-        "x": 6,
-        "y": 20
+        "x": 7,
+        "y": 15
       },
       "id": 19,
       "links": [],
@@ -1208,9 +1459,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
-        "x": 9,
-        "y": 20
+        "w": 4,
+        "x": 10,
+        "y": 15
       },
       "hideTimeOverride": false,
       "id": 16,
@@ -1294,9 +1545,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
-        "x": 12,
-        "y": 20
+        "w": 4,
+        "x": 14,
+        "y": 15
       },
       "id": 21,
       "links": [],
@@ -1369,9 +1620,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
-        "x": 15,
-        "y": 20
+        "w": 4,
+        "x": 18,
+        "y": 15
       },
       "id": 154,
       "links": [],
@@ -1407,7 +1658,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 19
       },
       "id": 263,
       "panels": [],
@@ -1450,7 +1701,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 25
+        "y": 20
       },
       "hiddenSeries": false,
       "id": 77,
@@ -1638,7 +1889,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 25
+        "y": 20
       },
       "hiddenSeries": false,
       "id": 78,
@@ -1819,7 +2070,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 32
+        "y": 27
       },
       "hiddenSeries": false,
       "id": 74,
@@ -1937,7 +2188,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 32
+        "y": 27
       },
       "height": "",
       "hiddenSeries": false,
@@ -2029,7 +2280,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 34
       },
       "id": 265,
       "panels": [],
@@ -2068,7 +2319,7 @@
         "h": 12,
         "w": 12,
         "x": 0,
-        "y": 40
+        "y": 35
       },
       "hiddenSeries": false,
       "id": 3,
@@ -2259,7 +2510,7 @@
         "h": 12,
         "w": 12,
         "x": 12,
-        "y": 40
+        "y": 35
       },
       "hiddenSeries": false,
       "id": 24,
@@ -2444,7 +2695,7 @@
         "h": 12,
         "w": 12,
         "x": 0,
-        "y": 52
+        "y": 47
       },
       "hiddenSeries": false,
       "id": 84,
@@ -2472,7 +2723,6 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:5871",
           "alias": "/.*Trans.*/",
           "transform": "negative-Y"
         }
@@ -2518,7 +2768,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:5884",
           "format": "bps",
           "label": "bits out (-) / in (+)",
           "logBase": 1,
@@ -2527,7 +2776,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:5885",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2561,7 +2809,7 @@
         "h": 12,
         "w": 12,
         "x": 12,
-        "y": 52
+        "y": 47
       },
       "height": "",
       "hiddenSeries": false,
@@ -2665,7 +2913,7 @@
         "h": 12,
         "w": 12,
         "x": 0,
-        "y": 64
+        "y": 59
       },
       "hiddenSeries": false,
       "id": 229,
@@ -2865,7 +3113,7 @@
         "h": 12,
         "w": 12,
         "x": 12,
-        "y": 64
+        "y": 59
       },
       "hiddenSeries": false,
       "id": 42,
@@ -3006,7 +3254,7 @@
         "h": 12,
         "w": 12,
         "x": 0,
-        "y": 76
+        "y": 71
       },
       "hiddenSeries": false,
       "id": 127,
@@ -3098,7 +3346,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 88
+        "y": 83
       },
       "id": 266,
       "panels": [
@@ -3690,12 +3938,10 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:4131",
               "alias": "ShmemHugePages - Memory used by shared memory (shmem) and tmpfs allocated  with huge pages",
               "fill": 0
             },
             {
-              "$$hashKey": "object:4138",
               "alias": "ShmemHugePages - Memory used by shared memory (shmem) and tmpfs allocated  with huge pages",
               "fill": 0
             }
@@ -3759,7 +4005,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:4106",
               "format": "bytes",
               "label": "bytes",
               "logBase": 1,
@@ -3768,7 +4013,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:4107",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -5044,7 +5288,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 89
+        "y": 84
       },
       "id": 267,
       "panels": [
@@ -5323,7 +5567,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:6118",
               "alias": "Pgfault - Page major and minor fault operations",
               "fill": 0,
               "stack": false
@@ -5378,7 +5621,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:6133",
               "format": "short",
               "label": "faults",
               "logBase": 1,
@@ -5387,7 +5629,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:6134",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -5497,7 +5738,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:5373",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -5506,7 +5746,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:5374",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -5532,7 +5771,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 90
+        "y": 85
       },
       "id": 293,
       "panels": [
@@ -5972,7 +6211,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 91
+        "y": 86
       },
       "id": 312,
       "panels": [
@@ -6056,7 +6295,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:6500",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -6065,7 +6303,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:6501",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -6152,7 +6389,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:6500",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -6161,7 +6397,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:6501",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -6248,7 +6483,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:6640",
               "format": "short",
               "label": "forks / sec",
               "logBase": 1,
@@ -6257,7 +6491,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:6641",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -6436,7 +6669,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:709",
               "alias": "PIDs limit",
               "color": "#F2495C",
               "fill": 0
@@ -6485,7 +6717,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:6500",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -6494,7 +6725,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:6501",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -6548,7 +6778,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:4963",
               "alias": "/.*waiting.*/",
               "transform": "negative-Y"
             }
@@ -6596,7 +6825,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:4860",
               "format": "s",
               "label": "seconds",
               "logBase": 1,
@@ -6605,7 +6833,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:4861",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -6659,7 +6886,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:709",
               "alias": "Threads limit",
               "color": "#F2495C",
               "fill": 0
@@ -6708,7 +6934,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:6500",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -6717,7 +6942,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:6501",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -6742,7 +6966,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 92
+        "y": 87
       },
       "id": 269,
       "panels": [
@@ -6938,7 +7162,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:6261",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -6947,7 +7170,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:6262",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -7138,7 +7360,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:4860",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -7147,7 +7368,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:4861",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -7233,7 +7453,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:6568",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -7242,7 +7461,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:6569",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -7329,7 +7547,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:4860",
               "format": "s",
               "label": "seconds",
               "logBase": 1,
@@ -7338,7 +7555,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:4861",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -7391,7 +7607,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:6323",
               "alias": "/.*Max*./",
               "color": "#890F02",
               "fill": 0
@@ -7438,7 +7653,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:6338",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -7447,7 +7661,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:6339",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -7473,7 +7686,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 93
+        "y": 88
       },
       "id": 304,
       "panels": [],
@@ -7498,7 +7711,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 94
+        "y": 89
       },
       "hiddenSeries": false,
       "id": 158,
@@ -7525,13 +7738,11 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:6726",
           "alias": "/.*Critical*./",
           "color": "#E24D42",
           "fill": 0
         },
         {
-          "$$hashKey": "object:6727",
           "alias": "/.*Max*./",
           "color": "#EF843C",
           "fill": 0
@@ -7610,7 +7821,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:6750",
           "format": "celsius",
           "label": "temperature",
           "logBase": 1,
@@ -7619,7 +7829,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:6751",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -7651,7 +7860,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 94
+        "y": 89
       },
       "hiddenSeries": false,
       "id": 300,
@@ -7678,7 +7887,6 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:1655",
           "alias": "/.*Max*./",
           "color": "#EF843C",
           "fill": 0
@@ -7728,7 +7936,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:1678",
           "format": "short",
           "label": "counter",
           "logBase": 1,
@@ -7737,7 +7944,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:1679",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -7769,7 +7975,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 104
+        "y": 99
       },
       "hiddenSeries": false,
       "id": 302,
@@ -7830,7 +8036,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:1678",
           "format": "short",
           "label": "counter",
           "logBase": 1,
@@ -7839,7 +8044,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:1679",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -7860,7 +8064,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 114
+        "y": 109
       },
       "id": 296,
       "panels": [
@@ -8118,7 +8322,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 115
+        "y": 110
       },
       "id": 270,
       "panels": [
@@ -8166,107 +8370,86 @@
           "repeat": null,
           "seriesOverrides": [
             {
-              "$$hashKey": "object:2033",
               "alias": "/.*Read.*/",
               "transform": "negative-Y"
             },
             {
-              "$$hashKey": "object:2034",
               "alias": "/.*sda_.*/",
               "color": "#7EB26D"
             },
             {
-              "$$hashKey": "object:2035",
               "alias": "/.*sdb_.*/",
               "color": "#EAB839"
             },
             {
-              "$$hashKey": "object:2036",
               "alias": "/.*sdc_.*/",
               "color": "#6ED0E0"
             },
             {
-              "$$hashKey": "object:2037",
               "alias": "/.*sdd_.*/",
               "color": "#EF843C"
             },
             {
-              "$$hashKey": "object:2038",
               "alias": "/.*sde_.*/",
               "color": "#E24D42"
             },
             {
-              "$$hashKey": "object:2039",
               "alias": "/.*sda1.*/",
               "color": "#584477"
             },
             {
-              "$$hashKey": "object:2040",
               "alias": "/.*sda2_.*/",
               "color": "#BA43A9"
             },
             {
-              "$$hashKey": "object:2041",
               "alias": "/.*sda3_.*/",
               "color": "#F4D598"
             },
             {
-              "$$hashKey": "object:2042",
               "alias": "/.*sdb1.*/",
               "color": "#0A50A1"
             },
             {
-              "$$hashKey": "object:2043",
               "alias": "/.*sdb2.*/",
               "color": "#BF1B00"
             },
             {
-              "$$hashKey": "object:2044",
               "alias": "/.*sdb3.*/",
               "color": "#E0752D"
             },
             {
-              "$$hashKey": "object:2045",
               "alias": "/.*sdc1.*/",
               "color": "#962D82"
             },
             {
-              "$$hashKey": "object:2046",
               "alias": "/.*sdc2.*/",
               "color": "#614D93"
             },
             {
-              "$$hashKey": "object:2047",
               "alias": "/.*sdc3.*/",
               "color": "#9AC48A"
             },
             {
-              "$$hashKey": "object:2048",
               "alias": "/.*sdd1.*/",
               "color": "#65C5DB"
             },
             {
-              "$$hashKey": "object:2049",
               "alias": "/.*sdd2.*/",
               "color": "#F9934E"
             },
             {
-              "$$hashKey": "object:2050",
               "alias": "/.*sdd3.*/",
               "color": "#EA6460"
             },
             {
-              "$$hashKey": "object:2051",
               "alias": "/.*sde1.*/",
               "color": "#E0F9D7"
             },
             {
-              "$$hashKey": "object:2052",
               "alias": "/.*sdd2.*/",
               "color": "#FCEACA"
             },
             {
-              "$$hashKey": "object:2053",
               "alias": "/.*sde3.*/",
               "color": "#F9E2D2"
             }
@@ -8310,7 +8493,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:2186",
               "format": "iops",
               "label": "IO read (-) / write (+)",
               "logBase": 1,
@@ -8319,7 +8501,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:2187",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -9487,102 +9668,82 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:2034",
               "alias": "/.*sda_.*/",
               "color": "#7EB26D"
             },
             {
-              "$$hashKey": "object:2035",
               "alias": "/.*sdb_.*/",
               "color": "#EAB839"
             },
             {
-              "$$hashKey": "object:2036",
               "alias": "/.*sdc_.*/",
               "color": "#6ED0E0"
             },
             {
-              "$$hashKey": "object:2037",
               "alias": "/.*sdd_.*/",
               "color": "#EF843C"
             },
             {
-              "$$hashKey": "object:2038",
               "alias": "/.*sde_.*/",
               "color": "#E24D42"
             },
             {
-              "$$hashKey": "object:2039",
               "alias": "/.*sda1.*/",
               "color": "#584477"
             },
             {
-              "$$hashKey": "object:2040",
               "alias": "/.*sda2_.*/",
               "color": "#BA43A9"
             },
             {
-              "$$hashKey": "object:2041",
               "alias": "/.*sda3_.*/",
               "color": "#F4D598"
             },
             {
-              "$$hashKey": "object:2042",
               "alias": "/.*sdb1.*/",
               "color": "#0A50A1"
             },
             {
-              "$$hashKey": "object:2043",
               "alias": "/.*sdb2.*/",
               "color": "#BF1B00"
             },
             {
-              "$$hashKey": "object:2044",
               "alias": "/.*sdb3.*/",
               "color": "#E0752D"
             },
             {
-              "$$hashKey": "object:2045",
               "alias": "/.*sdc1.*/",
               "color": "#962D82"
             },
             {
-              "$$hashKey": "object:2046",
               "alias": "/.*sdc2.*/",
               "color": "#614D93"
             },
             {
-              "$$hashKey": "object:2047",
               "alias": "/.*sdc3.*/",
               "color": "#9AC48A"
             },
             {
-              "$$hashKey": "object:2048",
               "alias": "/.*sdd1.*/",
               "color": "#65C5DB"
             },
             {
-              "$$hashKey": "object:2049",
               "alias": "/.*sdd2.*/",
               "color": "#F9934E"
             },
             {
-              "$$hashKey": "object:2050",
               "alias": "/.*sdd3.*/",
               "color": "#EA6460"
             },
             {
-              "$$hashKey": "object:2051",
               "alias": "/.*sde1.*/",
               "color": "#E0F9D7"
             },
             {
-              "$$hashKey": "object:2052",
               "alias": "/.*sdd2.*/",
               "color": "#FCEACA"
             },
             {
-              "$$hashKey": "object:2053",
               "alias": "/.*sde3.*/",
               "color": "#F9E2D2"
             }
@@ -9628,7 +9789,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:2186",
               "format": "iops",
               "label": "IOs",
               "logBase": 1,
@@ -9637,7 +9797,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:2187",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -9663,7 +9822,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 116
+        "y": 111
       },
       "id": 271,
       "panels": [
@@ -9762,7 +9921,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:3826",
               "format": "bytes",
               "label": "bytes",
               "logBase": 1,
@@ -9771,7 +9929,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:3827",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -9860,7 +10017,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:3894",
               "format": "short",
               "label": "file nodes",
               "logBase": 1,
@@ -9869,7 +10025,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:3895",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -10169,7 +10324,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:3670",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -10178,7 +10332,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:3671",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -10204,7 +10357,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 117
+        "y": 112
       },
       "id": 272,
       "panels": [
@@ -10914,7 +11067,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:576",
               "alias": "/.*Trans.*/",
               "transform": "negative-Y"
             }
@@ -10953,7 +11105,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:589",
               "format": "pps",
               "label": "packets out (-) / in (+)",
               "logBase": 1,
@@ -10962,7 +11113,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:590",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -11217,7 +11367,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:663",
               "alias": "NF conntrack limit",
               "color": "#890F02",
               "fill": 0
@@ -11264,7 +11413,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:678",
               "format": "short",
               "label": "entries",
               "logBase": 1,
@@ -11273,7 +11421,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:679",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -11707,7 +11854,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:232",
               "alias": "/.*Dropped.*/",
               "transform": "negative-Y"
             }
@@ -11755,7 +11901,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:207",
               "format": "short",
               "label": "packetes drop (-) / process (+)",
               "logBase": 1,
@@ -11764,7 +11909,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:208",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -11856,7 +12000,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:207",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -11865,7 +12008,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:208",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -11996,7 +12138,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 118
+        "y": 113
       },
       "id": 273,
       "panels": [
@@ -12546,7 +12688,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:1572",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -12555,7 +12696,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:1573",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -12581,7 +12721,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 119
+        "y": 114
       },
       "id": 274,
       "panels": [
@@ -12632,7 +12772,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:1876",
               "alias": "/.*Out.*/",
               "transform": "negative-Y"
             }
@@ -12679,7 +12818,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:1889",
               "format": "short",
               "label": "octects out (-) / in (+)",
               "logBase": 1,
@@ -12688,7 +12826,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:1890",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -12781,7 +12918,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:1957",
               "format": "short",
               "label": "datagrams",
               "logBase": 1,
@@ -12790,7 +12926,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:1958",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -13252,7 +13387,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:4232",
               "format": "short",
               "label": "datagrams",
               "logBase": 1,
@@ -13261,7 +13395,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:4233",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -13571,7 +13704,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:454",
               "alias": "/.*MaxConn *./",
               "color": "#890F02",
               "fill": 0
@@ -13622,7 +13754,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:469",
               "format": "short",
               "label": "connections",
               "logBase": 1,
@@ -13631,7 +13762,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:470",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -13891,7 +14021,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 120
+        "y": 115
       },
       "id": 279,
       "panels": [
@@ -14032,7 +14162,6 @@
           "renderer": "flot",
           "seriesOverrides": [
             {
-              "$$hashKey": "object:1969",
               "alias": "/.*error.*/",
               "color": "#F2495C",
               "transform": "negative-Y"
@@ -14083,7 +14212,6 @@
           },
           "yaxes": [
             {
-              "$$hashKey": "object:1484",
               "format": "short",
               "label": "counter",
               "logBase": 1,
@@ -14092,7 +14220,6 @@
               "show": true
             },
             {
-              "$$hashKey": "object:1485",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -14112,7 +14239,7 @@
       "type": "row"
     }
   ],
-  "refresh": false,
+  "refresh": "10s",
   "schemaVersion": 25,
   "style": "dark",
   "tags": [
@@ -14168,8 +14295,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "d0efc865de33",
-          "value": "d0efc865de33"
+          "text": "06c7f57c4f26",
+          "value": "06c7f57c4f26"
         },
         "datasource": "Prometheus",
         "definition": "",
@@ -14194,8 +14321,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "127.0.0.1",
-          "value": "127.0.0.1"
+          "text": "35.227.135.233",
+          "value": "35.227.135.233"
         },
         "datasource": "Prometheus",
         "definition": "",
@@ -14250,7 +14377,6 @@
   },
   "timepicker": {
     "refresh_intervals": [
-      "5s",
       "10s",
       "30s",
       "1m",
@@ -14276,5 +14402,5 @@
   "timezone": "browser",
   "title": "Near Node Exporter Full",
   "uid": "rYdddlPWkgg",
-  "version": 29
+  "version": 19
 }

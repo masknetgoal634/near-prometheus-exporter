@@ -4,6 +4,8 @@ In this guide, you will learn how to setup Prometheus node exporter and [near ex
 
 ## Run Node Exporter on the Node
 
+First we need to deploy [near prometheus exporter](https://github.com/masknetgoal634/near-prometheus-exporter) service to collect custom metrics from the near node using json-rpc.
+
 ```
 sudo docker run -dit \
     --restart always \
@@ -37,6 +39,10 @@ sudo docker run -dit \
 
 Open 9333 port in your server firewall as Prometheus reads metrics on this port.
 
+## Collect Metrics From The Near Node
+
+Open 3030 port in your server firewall to collect metrics from the near node itself
+
 ## Configure the Near Node as Target on Prometheus Server
 
 Now that we have the node and near exporters up and running on the node, we have to add targets on the Prometheus server configuration.
@@ -60,6 +66,11 @@ open `prometheus/prometheus.yml` and add an ip address of your node:
     scrape_interval: 15s
     static_configs:
     - targets: ['<NODE_IP_ADDRESS>:9333']
+
+  - job_name: near-node
+    scrape_interval: 15s
+    static_configs:
+    - targets: ['<NODE_IP_ADDRESS>:3030']
   ...
 ```
 
@@ -78,12 +89,15 @@ sudo docker run -dti \
 ### Run Grafana
 
 ```
-sudo chown -R 472:472 grafana
+sudo chown -R 472:472 grafana/*
+
 sudo docker run -dit \
     --restart always \
     --volume $(pwd)/grafana:/var/lib/grafana \
     --volume $(pwd)/grafana/provisioning:/etc/grafana/provisioning \
+    --volume $(pwd)/grafana/custom.ini:/etc/grafana/grafana.ini \
     --user 472 \
+    --network=host \
     --name grafana \
     -p 3000:3000 grafana/grafana
 ```
@@ -92,8 +106,8 @@ Open in your favorite browser `http://localhost:3000`
 
 ![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/image0.png)
 
-login "admin"
-password "admin"
+Username: admin
+Password: admin
 
 Open `Near Node Exporter Full` dashboard
 
@@ -101,14 +115,48 @@ Open `Near Node Exporter Full` dashboard
 
 ![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/image2.png)
 
-### Configure Alert in Grafana
+Set up refresh time at the top-right corner of the dashboard:
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/refresh_time.png)
 
-Add a telegram channel with your Telegram TokenId and ChannelId
+### Grafana Email Notification Alert
 
-![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/image3.png)
+First we need to edit the grafana config file `etc/grafana/custom.ini`
 
-Also add an alert when blocks did not produced during 5 minutes
+```
+[smtp]
+enabled = true
+host = smtp.gmail.com:587 
+user = <your_gmail_address>
+password = <your_gmail_password>
+;cert_file =
+;key_file =
+skip_verify = true
+from_address = <your_gmail_address>
+from_name = Grafana
+```
 
-![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/image4.png)
+Now we need to configure an Email Alert channel in the alerting serction:
 
-Enjoy!
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/email_channel.png)
+
+Enter your an email.
+
+Click on "Send Test" button.
+If you getting error you need to access the grafana app the following url and accept the app:
+
+ https://accounts.google.com/DisplayUnlockCaptcha
+
+Now click again on "Send Test" button and look into your email account inbox.
+
+Finally we are ready to create our first alert!
+
+Open "Near Node Exporter Full" dashboard end then edit "Peer Connections Total" panel:  
+
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/email_alert.png)
+
+You need to set a threshold for the peer connections, for instance you may set 5.
+When the peer connections will be below 5 you will see an alert in your email inbox.  
+
+Enjoy
+
+Updated Guide: 14.06.2020

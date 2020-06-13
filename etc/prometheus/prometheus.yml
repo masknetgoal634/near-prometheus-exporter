@@ -37,3 +37,8 @@ scrape_configs:
     scrape_interval: 15s
     static_configs:
     - targets: ['<NODE_IP_ADDRESS>:9333']
+
+  - job_name: near-node
+    scrape_interval: 15s
+    static_configs:
+    - targets: ['<NODE_IP_ADDRESS>:3030']
