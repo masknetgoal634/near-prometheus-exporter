@@ -868,7 +868,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Peoduced / Expected Blocks",
+      "title": "Produced / Expected Blocks",
       "type": "gauge"
     },
     {
