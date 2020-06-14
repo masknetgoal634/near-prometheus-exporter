@@ -89,7 +89,7 @@ sudo docker run -dti \
 ### Run Grafana
 
 ```
-sudo chown -R 472:472 grafana/*
+sudo chown -R 472:472 grafana
 
 sudo docker run -dit \
     --restart always \
