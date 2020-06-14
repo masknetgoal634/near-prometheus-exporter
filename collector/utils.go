@@ -2,21 +2,20 @@ package collector
 
 import (
 	"fmt"
-	"math"
+	"hash/fnv"
 	"strconv"
 	"strings"
 )
 
-func getFloat64FromString(s string) (float64, error) {
-	n, err := strconv.ParseUint(s, 16, 32)
+func StringToInt64(s string) int64 {
+	v, err := strconv.ParseInt(s[0:6], 10, 64)
 	if err != nil {
 		fmt.Println(err)
-		return 0.0, err
 	}
-	return math.Float64frombits(uint64(n)), err
+	return int64(v)
 }
 
-func getFloatVersionFromString(s string) (float64, error) {
+func GetFloatVersionFromString(s string) (float64, error) {
 	value := strings.Replace(s, ".", "", -1)
 	v, err := strconv.ParseFloat(value, 64)
 	if err != nil {
@@ -24,4 +23,10 @@ func getFloatVersionFromString(s string) (float64, error) {
 		return 0.0, err
 	}
 	return v, err
+}
+
+func HashString(s string) uint32 {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return h.Sum32()
 }

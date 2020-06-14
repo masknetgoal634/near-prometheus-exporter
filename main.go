@@ -51,17 +51,8 @@ func main() {
 
 	registry := prometheus.NewPedanticRegistry()
 	registry.MustRegister(
-		collector.NewBlockNumber(client),
-		collector.NewEpochBlockProduced(client, *accountId),
-		collector.NewEpochBlockExpected(client, *accountId),
-		collector.NewNearSyncing(client),
-		collector.NewCurrentStake(client),
-		collector.NewSeatPrice(client),
-		collector.NewVersionBuild(client),
-		collector.NewVersionNumber(client),
-		collector.NewDevVersionNumber(devClient),
-		collector.NewDevVersionBuild(devClient),
-		collector.NewEpochStartHeight(client),
+		collector.NewNodeRpcMetrics(client, *accountId),
+		collector.NewDevNodeRpcMetrics(devClient),
 	)
 
 	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{

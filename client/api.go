@@ -3,12 +3,10 @@ package nearapi
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -44,8 +42,8 @@ type ValidatorsResult struct {
 			Validator
 			IsSlashed         bool  `json:"is_slashed"`
 			Shards            []int `json:"shards"`
-			NumProducedBlocks int   `json:"num_produced_blocks"`
-			NumExpectedBlocks int   `json:"num_expected_blocks"`
+			NumProducedBlocks int64 `json:"num_produced_blocks"`
+			NumExpectedBlocks int64 `json:"num_expected_blocks"`
 		} `json:"current_validators"`
 		NextValidators []struct {
 			Validator
@@ -64,28 +62,18 @@ type Result struct {
 }
 
 type Client struct {
-	httpClient       *http.Client
-	Endpoint         string
-	lastCacheTime    int64
-	cacheVals        *Result
-	cacheStatus      *Result
-	seatPrice        int64
-	currentStake     int64
-	versionNumber    string
-	versionBuild     string
-	epochStartHeight int64
+	httpClient *http.Client
+	Endpoint   string
 }
 
 func NewClient(endpoint string) *Client {
-	timeout := time.Duration(5 * time.Second)
+	timeout := time.Duration(10 * time.Second)
 	httpClient := &http.Client{
 		Timeout: timeout,
 	}
 	return &Client{
-		Endpoint:      endpoint,
-		httpClient:    httpClient,
-		versionNumber: "0",
-		versionBuild:  "0",
+		Endpoint:   endpoint,
+		httpClient: httpClient,
 	}
 }
 
@@ -151,134 +139,4 @@ func (c *Client) Get(method string, variables interface{}) (*Result, error) {
 		return nil, err2
 	}
 	return &d, nil
-}
-
-func (c *Client) freshCache() bool {
-	now := time.Now().Unix()
-	if (now - c.lastCacheTime) <= 10 {
-		return true
-	}
-	return false
-}
-
-// Near json api
-// Get Status
-func (c *Client) Status() (*Result, error) {
-	if c.freshCache() {
-		return c.cacheStatus, nil
-	}
-	var err error
-	c.cacheStatus, err = c.Get("status", nil)
-	c.lastCacheTime = time.Now().Unix()
-	c.versionNumber = c.cacheStatus.Status.Version.Version
-	c.versionBuild = c.cacheStatus.Status.Version.Build
-	return c.cacheStatus, err
-}
-
-// Get Current and Next validators
-func (c *Client) Validators() (*Result, error) {
-	if c.freshCache() {
-		return c.cacheVals, nil
-	}
-	r, err := c.Status()
-	if err != nil {
-		fmt.Println(err)
-	}
-	blockHeight := r.Status.SyncInfo.LatestBlockHeight
-	c.cacheVals, err = c.Get("validators", []uint64{blockHeight})
-	c.epochStartHeight = c.cacheVals.Validators.EpochStartHeight
-	return c.cacheVals, err
-}
-
-func (c *Client) Syncing() (bool, error) {
-	r, err := c.Status()
-	if err != nil {
-		fmt.Println(err)
-		return false, err
-	}
-	return r.Status.SyncInfo.Syncing, nil
-}
-
-func (c *Client) LatestBlockHash() string {
-	r, err := c.Status()
-	if err != nil {
-		fmt.Println(err)
-		return ""
-	}
-	return r.Status.SyncInfo.LatestBlockHash
-}
-
-func (c *Client) LatestBlockHeight() (uint64, error) {
-	r, err := c.Status()
-	if err != nil {
-		fmt.Println(err)
-		return 0, err
-	}
-	return r.Status.SyncInfo.LatestBlockHeight, err
-}
-
-func stringToInt64(s string) int64 {
-	v, err := strconv.ParseInt(s[0:6], 10, 64)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return int64(v)
-}
-
-func (c *Client) ProducedBlocks(accountId string) (int, error) {
-	r, err := c.Validators()
-	if err != nil {
-		fmt.Println(err)
-		return 0, err
-	}
-	pb := 0
-	c.seatPrice = 0
-	for _, v := range r.Validators.CurrentValidators {
-		t := stringToInt64(v.Stake)
-		if c.seatPrice == 0 {
-			c.seatPrice = t
-		}
-		if c.seatPrice > t {
-			c.seatPrice = t
-		}
-		if v.AccountId == accountId {
-			pb = v.NumProducedBlocks
-			c.currentStake = t
-		}
-	}
-	return pb, nil
-}
-
-func (c *Client) ExpectedBlocks(accountId string) (int, error) {
-	r, err := c.Validators()
-	if err != nil {
-		fmt.Println(err)
-		return 0, err
-	}
-	for _, v := range r.Validators.CurrentValidators {
-		if v.AccountId == accountId {
-			return v.NumExpectedBlocks, nil
-		}
-	}
-	return 0, errors.New("account id not found")
-}
-
-func (c *Client) SeatPrice() (int64, error) {
-	return c.seatPrice, nil
-}
-
-func (c *Client) CurrentStake() (int64, error) {
-	return c.currentStake, nil
-}
-
-func (c *Client) VersionNumber() (string, error) {
-	return c.versionNumber, nil
-}
-
-func (c *Client) VersionBuild() (string, error) {
-	return c.versionBuild, nil
-}
-
-func (c *Client) EpochStartHeight() (int64, error) {
-	return c.epochStartHeight, nil
 }
