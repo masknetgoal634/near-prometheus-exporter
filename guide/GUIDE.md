@@ -150,7 +150,7 @@ Now click again on "Send Test" button and look into your email account inbox.
 
 Finally we are ready to create our first alert!
 
-Open "Near Node Exporter Full" dashboard end then edit "Peer Connections Total" panel:  
+Open "Near Node Exporter Full" dashboard end edit "Peer Connections Total" panel:  
 
 ![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/email_alert.png)
 
