@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"fmt"
 	"strconv"
 
 	nearapi "github.com/masknetgoal634/near-exporter/client"
@@ -15,7 +14,6 @@ type NodeRpcMetrics struct {
 	epochBlockExpectedDesc    *prometheus.Desc
 	seatPriceDesc             *prometheus.Desc
 	currentStakeDesc          *prometheus.Desc
-	versionNumberDesc         *prometheus.Desc
 	epochStartHeightDesc      *prometheus.Desc
 	blockNumberDesc           *prometheus.Desc
 	syncingDesc               *prometheus.Desc
@@ -54,12 +52,6 @@ func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics
 			nil,
 			nil,
 		),
-		versionNumberDesc: prometheus.NewDesc(
-			"near_version_number",
-			"Near node version number",
-			nil,
-			nil,
-		),
 		epochStartHeightDesc: prometheus.NewDesc(
 			"near_epoch_start_height",
 			"Near epoch start height",
@@ -80,8 +72,8 @@ func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics
 		),
 		versionBuildDesc: prometheus.NewDesc(
 			"near_version_build",
-			"Near node version build",
-			nil,
+			"The Near node version build",
+			[]string{"version", "build"},
 			nil,
 		),
 		currentValidatorStakeDesc: prometheus.NewDesc(
@@ -117,7 +109,6 @@ func (collector *NodeRpcMetrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.epochBlockExpectedDesc
 	ch <- collector.seatPriceDesc
 	ch <- collector.currentStakeDesc
-	ch <- collector.versionNumberDesc
 	ch <- collector.epochStartHeightDesc
 	ch <- collector.blockNumberDesc
 	ch <- collector.syncingDesc
@@ -131,7 +122,7 @@ func (collector *NodeRpcMetrics) Describe(ch chan<- *prometheus.Desc) {
 func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	sr, err := collector.client.Get("status", nil)
 	if err != nil {
-		ch <- prometheus.NewInvalidMetric(collector.versionNumberDesc, err)
+		ch <- prometheus.NewInvalidMetric(collector.versionBuildDesc, err)
 		return
 	}
 	syn := sr.Status.SyncInfo.Syncing
@@ -143,15 +134,10 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	blockHeight := sr.Status.SyncInfo.LatestBlockHeight
-	versionNumber := sr.Status.Version.Version
-	vn, err := GetFloatVersionFromString(versionNumber)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	ch <- prometheus.MustNewConstMetric(collector.blockNumberDesc, prometheus.GaugeValue, float64(blockHeight))
 
-	versionBuildStr := sr.Status.Version.Build
-	versionBuildInt := HashString(versionBuildStr)
+	versionBuildInt := HashString(sr.Status.Version.Build)
+	ch <- prometheus.MustNewConstMetric(collector.versionBuildDesc, prometheus.GaugeValue, float64(versionBuildInt), sr.Status.Version.Version, sr.Status.Version.Build)
 
 	r, err := collector.client.Get("validators", []uint64{blockHeight})
 	if err != nil {
@@ -213,18 +199,9 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	value = float64(currentStake)
 	ch <- prometheus.MustNewConstMetric(collector.currentStakeDesc, prometheus.GaugeValue, value)
 
-	value = float64(vn)
-	ch <- prometheus.MustNewConstMetric(collector.versionNumberDesc, prometheus.GaugeValue, value)
-
 	value = float64(epochStartHeight)
 	ch <- prometheus.MustNewConstMetric(collector.epochStartHeightDesc, prometheus.GaugeValue, value)
 
-	value = float64(blockHeight)
-	ch <- prometheus.MustNewConstMetric(collector.blockNumberDesc, prometheus.GaugeValue, value)
-
 	value = float64(isSyncing)
 	ch <- prometheus.MustNewConstMetric(collector.syncingDesc, prometheus.GaugeValue, value)
-
-	value = float64(versionBuildInt)
-	ch <- prometheus.MustNewConstMetric(collector.versionBuildDesc, prometheus.GaugeValue, value)
 }
