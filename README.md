@@ -32,10 +32,11 @@ By default the exporter serves on `:9333` at `/metrics`.
 | near_current_stake | The current stake of a given account id |
 | near_sync_state | The current sync state of node |
 | near_epoch_start_height | The epoch start height |
-| near_version_number | The version number of the near node (float value) |
-| near_version_build | The version build of the near node (float value) |
-| near_dev_version_number | The dev node version number of the public rpc node (float value) |
-| near_dev_version_build | The version build of of the public rpc node (float value) |
+| near_version_build{build,version} | The version build of the near node |
+| near_dev_version_build{build,version} | The version build of of the public rpc node |
+| near_next_validator_stake{account_id,public_key,shards} | The next stake of epoch |
+| near_current_validator_stake{account_id,num_produced_blocks,num_expected_blocks,public_key,shards,slashed} |  The current stake of epoch |
+| near_current_proposals_stake{account_id,public_key} | The current stake proposals  |
 
 ## License
 
