@@ -37,6 +37,7 @@ By default the exporter serves on `:9333` at `/metrics`.
 | near_next_validator_stake{account_id,public_key,shards} | The next stake of epoch |
 | near_current_validator_stake{account_id,num_produced_blocks,num_expected_blocks,public_key,shards,slashed} |  The current stake of epoch |
 | near_current_proposals_stake{account_id,public_key} | The current stake proposals  |
+| near_prev_epoch_kickout{account_id,reason,produced,expected,stake_u128,threshold_u128} | Previous epoch kicked out validators |
 
 ## License
 
