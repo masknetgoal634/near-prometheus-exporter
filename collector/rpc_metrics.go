@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"fmt"
 	"strconv"
 
 	nearapi "github.com/masknetgoal634/near-exporter/client"
@@ -94,13 +95,12 @@ func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics
 			[]string{"account_id", "public_key"},
 			nil,
 		),
-		/*
-			prevEpochKickoutDesc: prometheus.NewDesc(
-				"near_prev_epoch_kickout",
-				"Near previous epoch kicked out validators",
-				[]string{"account_id", "reason", "public_key", "shards"},
-				nil,
-			), */
+		prevEpochKickoutDesc: prometheus.NewDesc(
+			"near_prev_epoch_kickout",
+			"Near previous epoch kicked out validators",
+			[]string{"account_id", "reason", "produced", "expected", "stake_u128", "threshold_u128"},
+			nil,
+		),
 	}
 }
 
@@ -116,7 +116,7 @@ func (collector *NodeRpcMetrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.currentValidatorStakeDesc
 	ch <- collector.nextValidatorStakeDesc
 	ch <- collector.currentProposalsDesc
-	//ch <- collector.prevEpochKickoutDesc
+	ch <- collector.prevEpochKickoutDesc
 }
 
 func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
@@ -152,6 +152,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.NewInvalidMetric(collector.currentValidatorStakeDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.nextValidatorStakeDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.currentProposalsDesc, err)
+		ch <- prometheus.NewInvalidMetric(collector.prevEpochKickoutDesc, err)
 		return
 	}
 
@@ -161,9 +162,9 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	for _, v := range r.Validators.CurrentValidators {
 
 		ch <- prometheus.MustNewConstMetric(collector.currentValidatorStakeDesc, prometheus.GaugeValue,
-			float64(StringToFloat64(v.Stake)), v.AccountId, v.PublicKey, strconv.FormatBool(v.IsSlashed), strconv.Itoa(len(v.Shards)), strconv.Itoa(int(v.NumProducedBlocks)), strconv.Itoa(int(v.NumExpectedBlocks)))
+			float64(GetStakeFromString(v.Stake)), v.AccountId, v.PublicKey, strconv.FormatBool(v.IsSlashed), strconv.Itoa(len(v.Shards)), strconv.Itoa(int(v.NumProducedBlocks)), strconv.Itoa(int(v.NumExpectedBlocks)))
 
-		t := StringToFloat64(v.Stake)
+		t := GetStakeFromString(v.Stake)
 		if seatPrice == 0 {
 			seatPrice = t
 		}
@@ -179,12 +180,31 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 
 	for _, v := range r.Validators.NextValidators {
 		ch <- prometheus.MustNewConstMetric(collector.nextValidatorStakeDesc, prometheus.GaugeValue,
-			float64(StringToFloat64(v.Stake)), v.AccountId, v.PublicKey, strconv.Itoa(len(v.Shards)))
+			float64(GetStakeFromString(v.Stake)), v.AccountId, v.PublicKey, strconv.Itoa(len(v.Shards)))
 	}
 
 	for _, v := range r.Validators.CurrentProposals {
 		ch <- prometheus.MustNewConstMetric(collector.currentProposalsDesc, prometheus.GaugeValue,
-			float64(StringToFloat64(v.Stake)), v.AccountId, v.PublicKey)
+			float64(GetStakeFromString(v.Stake)), v.AccountId, v.PublicKey)
+	}
+
+	for _, v := range r.Validators.PrevEpochKickOut {
+		if reason, ok := v.Reason["NotEnoughStake"]; ok {
+			if threshold, ok2 := reason["threshold_u128"]; ok2 {
+				// set seat price if we have "threshold_u128"
+				seatPrice = GetStakeFromString(threshold.(string))
+			}
+			if stake, ok2 := reason["stake_u128"]; ok2 {
+				ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue,
+					GetStakeFromString(stake.(string)), v.AccountId, "NotEnoughStake", "", "", stake.(string), reason["threshold_u128"].(string))
+			}
+
+		} else if val, ok := v.Reason["NotEnoughBlocks"]; ok {
+			if produced, ok2 := val["produced"]; ok2 {
+				ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue,
+					float64(produced.(float64)), v.AccountId, "NotEnoughBlocks", fmt.Sprintf("%v", produced.(float64)), fmt.Sprintf("%v", val["expected"].(float64)), "", "")
+			}
+		}
 	}
 
 	ch <- prometheus.MustNewConstMetric(collector.epochBlockBroducedDesc, prometheus.GaugeValue, pb)
