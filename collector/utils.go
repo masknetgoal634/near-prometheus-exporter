@@ -7,12 +7,16 @@ import (
 	"strings"
 )
 
-func StringToInt64(s string) int64 {
-	v, err := strconv.ParseInt(s[0:6], 10, 64)
+func StringToFloat64(s string) float64 {
+	if len(s) == 1 {
+		return 0
+	}
+	l := len(s) - 19 - 5
+	v, err := strconv.ParseFloat(s[0:l], 64)
 	if err != nil {
 		fmt.Println(err)
 	}
-	return int64(v)
+	return float64(v)
 }
 
 func GetFloatVersionFromString(s string) (float64, error) {

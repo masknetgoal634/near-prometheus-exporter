@@ -157,13 +157,13 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 
 	epochStartHeight := r.Validators.EpochStartHeight
 
-	var pb, eb, seatPrice, currentStake int64
+	var pb, eb, seatPrice, currentStake float64
 	for _, v := range r.Validators.CurrentValidators {
 
 		ch <- prometheus.MustNewConstMetric(collector.currentValidatorStakeDesc, prometheus.GaugeValue,
-			float64(StringToInt64(v.Stake)), v.AccountId, v.PublicKey, strconv.FormatBool(v.IsSlashed), strconv.Itoa(len(v.Shards)), strconv.Itoa(int(v.NumProducedBlocks)), strconv.Itoa(int(v.NumExpectedBlocks)))
+			float64(StringToFloat64(v.Stake)), v.AccountId, v.PublicKey, strconv.FormatBool(v.IsSlashed), strconv.Itoa(len(v.Shards)), strconv.Itoa(int(v.NumProducedBlocks)), strconv.Itoa(int(v.NumExpectedBlocks)))
 
-		t := StringToInt64(v.Stake)
+		t := StringToFloat64(v.Stake)
 		if seatPrice == 0 {
 			seatPrice = t
 		}
@@ -171,37 +171,26 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 			seatPrice = t
 		}
 		if v.AccountId == collector.accountId {
-			pb = v.NumProducedBlocks
-			eb = v.NumExpectedBlocks
+			pb = float64(v.NumProducedBlocks)
+			eb = float64(v.NumExpectedBlocks)
 			currentStake = t
 		}
 	}
 
 	for _, v := range r.Validators.NextValidators {
 		ch <- prometheus.MustNewConstMetric(collector.nextValidatorStakeDesc, prometheus.GaugeValue,
-			float64(StringToInt64(v.Stake)), v.AccountId, v.PublicKey, strconv.Itoa(len(v.Shards)))
+			float64(StringToFloat64(v.Stake)), v.AccountId, v.PublicKey, strconv.Itoa(len(v.Shards)))
 	}
 
 	for _, v := range r.Validators.CurrentProposals {
 		ch <- prometheus.MustNewConstMetric(collector.currentProposalsDesc, prometheus.GaugeValue,
-			float64(StringToInt64(v.Stake)), v.AccountId, v.PublicKey)
+			float64(StringToFloat64(v.Stake)), v.AccountId, v.PublicKey)
 	}
 
-	value := float64(pb)
-	ch <- prometheus.MustNewConstMetric(collector.epochBlockBroducedDesc, prometheus.GaugeValue, value)
-
-	value = float64(eb)
-	ch <- prometheus.MustNewConstMetric(collector.epochBlockExpectedDesc, prometheus.GaugeValue, value)
-
-	value = float64(seatPrice)
-	ch <- prometheus.MustNewConstMetric(collector.seatPriceDesc, prometheus.GaugeValue, value)
-
-	value = float64(currentStake)
-	ch <- prometheus.MustNewConstMetric(collector.currentStakeDesc, prometheus.GaugeValue, value)
-
-	value = float64(epochStartHeight)
-	ch <- prometheus.MustNewConstMetric(collector.epochStartHeightDesc, prometheus.GaugeValue, value)
-
-	value = float64(isSyncing)
-	ch <- prometheus.MustNewConstMetric(collector.syncingDesc, prometheus.GaugeValue, value)
+	ch <- prometheus.MustNewConstMetric(collector.epochBlockBroducedDesc, prometheus.GaugeValue, pb)
+	ch <- prometheus.MustNewConstMetric(collector.epochBlockExpectedDesc, prometheus.GaugeValue, eb)
+	ch <- prometheus.MustNewConstMetric(collector.seatPriceDesc, prometheus.GaugeValue, seatPrice)
+	ch <- prometheus.MustNewConstMetric(collector.currentStakeDesc, prometheus.GaugeValue, currentStake)
+	ch <- prometheus.MustNewConstMetric(collector.epochStartHeightDesc, prometheus.GaugeValue, float64(epochStartHeight))
+	ch <- prometheus.MustNewConstMetric(collector.syncingDesc, prometheus.GaugeValue, float64(isSyncing))
 }
