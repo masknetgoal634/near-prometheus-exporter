@@ -26,11 +26,11 @@ WORKDIR /dist
 # Copy binary from build to main folder
 RUN cp /build/main .
 
-# Export necessary port
-EXPOSE 9333
+# # Export necessary port
+# EXPOSE 9333
 
-# Command to run when starting the container
-CMD ["/dist/main"]
+# # Command to run when starting the container
+# CMD ["/dist/main"]
 
 
 
