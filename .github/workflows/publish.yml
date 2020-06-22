@@ -7,18 +7,13 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-    
-    # Builds our docker image!
+    - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag near-prometheus-exporter:latest
 
-    # Publishes our image to Docker Hub
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        # the name of our image
         name: masknetgoal634/near-prometheus-exporter
-        # Here we pass in our Docker Username
         username: ${{ secrets.DOCKER_USERNAME }}
-        # and our Docker password which 
         password: ${{ secrets.DOCKER_PASSWORD }}
