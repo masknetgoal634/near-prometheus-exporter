@@ -1,4 +1,4 @@
-module github.com/masknetgoal634/near-exporter
+module github.com/bisontrails/near-prometheus-exporter
 
 go 1.13
 
