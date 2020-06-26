@@ -132,6 +132,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	} else {
 		isSyncing = 0
 	}
+	ch <- prometheus.MustNewConstMetric(collector.syncingDesc, prometheus.GaugeValue, float64(isSyncing))
 
 	blockHeight := sr.Status.SyncInfo.LatestBlockHeight
 	ch <- prometheus.MustNewConstMetric(collector.blockNumberDesc, prometheus.GaugeValue, float64(blockHeight))
@@ -156,7 +157,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 
-	epochStartHeight := r.Validators.EpochStartHeight
+	ch <- prometheus.MustNewConstMetric(collector.epochStartHeightDesc, prometheus.GaugeValue, float64(r.Validators.EpochStartHeight))
 
 	var pb, eb, seatPrice, currentStake float64
 	for _, v := range r.Validators.CurrentValidators {
@@ -177,6 +178,10 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 			currentStake = t
 		}
 	}
+	ch <- prometheus.MustNewConstMetric(collector.epochBlockBroducedDesc, prometheus.GaugeValue, pb)
+	ch <- prometheus.MustNewConstMetric(collector.epochBlockExpectedDesc, prometheus.GaugeValue, eb)
+	ch <- prometheus.MustNewConstMetric(collector.seatPriceDesc, prometheus.GaugeValue, seatPrice)
+	ch <- prometheus.MustNewConstMetric(collector.currentStakeDesc, prometheus.GaugeValue, currentStake)
 
 	for _, v := range r.Validators.NextValidators {
 		ch <- prometheus.MustNewConstMetric(collector.nextValidatorStakeDesc, prometheus.GaugeValue,
@@ -206,11 +211,4 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 			}
 		}
 	}
-
-	ch <- prometheus.MustNewConstMetric(collector.epochBlockBroducedDesc, prometheus.GaugeValue, pb)
-	ch <- prometheus.MustNewConstMetric(collector.epochBlockExpectedDesc, prometheus.GaugeValue, eb)
-	ch <- prometheus.MustNewConstMetric(collector.seatPriceDesc, prometheus.GaugeValue, seatPrice)
-	ch <- prometheus.MustNewConstMetric(collector.currentStakeDesc, prometheus.GaugeValue, currentStake)
-	ch <- prometheus.MustNewConstMetric(collector.epochStartHeightDesc, prometheus.GaugeValue, float64(epochStartHeight))
-	ch <- prometheus.MustNewConstMetric(collector.syncingDesc, prometheus.GaugeValue, float64(isSyncing))
 }
