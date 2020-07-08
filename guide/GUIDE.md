@@ -150,7 +150,7 @@ If you get the following error:
 
 You need to verify that your username and password entered in custom.ini are correct. If you changed username or password, just restart the Grafana container  using:
 
-  sudo docker restart grafana  
+  `sudo docker restart grafana`  
 
 Also, some settings need to be modified to enable sending mails. 
 Go to https://myaccount.google.com/lesssecureapps slide the button to right to allow.
@@ -180,4 +180,4 @@ When the peer connections will be below 5 you will see an alert in your email in
 
 Enjoy
 
-Updated: 13.06.2020
+Updated: 08.07.2020
