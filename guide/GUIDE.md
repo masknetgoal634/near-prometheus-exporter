@@ -142,11 +142,32 @@ Now we need to configure an Email Alert channel in the alerting serction:
 Enter your an email.
 
 Click on "Send Test" button.
-If you getting error you need to access the grafana app the following url and accept the app:
 
- https://accounts.google.com/DisplayUnlockCaptcha
+
+In 99% of cases, you get the following error:
+
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/alert_error.png)
+
+You need to verify that your username and password entered in custom.ini are correct. If there is any change in values for user name and password, then first stop, then remove and finally restart the container with Grafana using
+
+  sudo docker stop grafana //command to stop grafana container
+  sudo docker rm grafana //command to remove grafana container
+
+Also, some settings in gmail need to be modified to enable sending mails from your gmail account. Go to https://myaccount.google.com/lesssecureapps and give permission by sliding the button to right.
+
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/app_access.png)
+
+You may also need to confirm the action:
+
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/allow_access.png)
+
+If you getting error again you need to access the grafana app the following url and accept the app:
+
+  https://accounts.google.com/DisplayUnlockCaptcha
 
 Now click again on "Send Test" button and look into your email account inbox.
+
+![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/success_test.png)
 
 Finally we are ready to create our first alert!
 
