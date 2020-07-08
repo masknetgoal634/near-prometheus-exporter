@@ -153,7 +153,7 @@ You need to verify that your username and password entered in custom.ini are cor
   `sudo docker restart grafana`  
 
 Also, some settings need to be modified to enable sending mails. 
-Go to https://myaccount.google.com/lesssecureapps slide the button to right to allow.
+Go to https://myaccount.google.com/lesssecureapps slide the button to the right to allow.
 
 ![](https://raw.githubusercontent.com/masknetgoal634/near-prometheus-exporter/master/guide/img/app_access.png)
 
