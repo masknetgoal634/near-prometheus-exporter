@@ -1,6 +1,8 @@
 package collector
 
 import (
+	"fmt"
+
 	nearapi "github.com/masknetgoal634/near-exporter/client"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -29,6 +31,7 @@ func (collector *DevNodeRpcMetrics) Describe(ch chan<- *prometheus.Desc) {
 func (collector *DevNodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	sr, err := collector.client.Get("status", nil)
 	if err != nil {
+		fmt.Println("failed dev node get")
 		ch <- prometheus.NewInvalidMetric(collector.versionBuildDesc, err)
 		return
 	}
