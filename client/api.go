@@ -114,17 +114,17 @@ func (c *Client) do(method string, params interface{}) (string, error) {
 	req, err := http.NewRequest("POST", c.Endpoint, bytes.NewBuffer(payload))
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
-		log.Fatalln(err)
+		return "", err
 	}
 
 	r, err := c.httpClient.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		return "", err
 	}
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatalln(err)
+		return "", err
 	}
 	return string(body), nil
 }
