@@ -194,7 +194,10 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	for _, v := range r.Validators.PrevEpochKickOut {
-		if reason, ok := v.Reason["NotEnoughStake"]; ok {
+		if _, ok := v.Reason["DidNotGetASeat"]; ok {
+			ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue, 0, v.AccountId, "DidNotGetASeat", "", "", "", "")
+
+		} else if reason, ok := v.Reason["NotEnoughStake"]; ok {
 			if threshold, ok2 := reason["threshold_u128"]; ok2 {
 				// set seat price if we have "threshold_u128"
 				seatPrice = GetStakeFromString(threshold.(string))

@@ -136,6 +136,7 @@ func (c *Client) Get(method string, variables interface{}) (*Result, error) {
 	}
 	var d Result
 	res = strings.Replace(res, "result", fmt.Sprintf("%s_%s", "result", method), -1)
+	res = strings.Replace(res, `"DidNotGetASeat"`, `{"DidNotGetASeat":{}}`, -1)
 	r := bytes.NewReader([]byte(res))
 	err2 := json.NewDecoder(r).Decode(&d)
 	if err2 != nil {
