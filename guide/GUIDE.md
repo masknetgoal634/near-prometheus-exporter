@@ -88,6 +88,28 @@ sudo docker run -dti \
 
 ### Run Grafana
 
+open `grafana/custom.ini` and add your gmail address
+
+```
+...
+#################################### SMTP / Emailing ##########################
+[smtp]
+enabled = true
+host = smtp.gmail.com:587 
+user = <your_gmail_address>
+# If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
+password = <your_gmail_password>
+;cert_file =
+;key_file =
+skip_verify = true
+from_address = <your_gmail_address>
+from_name = Grafana
+# EHLO identity in SMTP dialog (defaults to instance_name)
+;ehlo_identity = dashboard.example.com
+# SMTP startTLS policy (defaults to 'OpportunisticStartTLS') 
+;startTLS_policy = NoStartTLS
+```
+
 ```
 sudo chown -R 472:472 grafana/*
 
