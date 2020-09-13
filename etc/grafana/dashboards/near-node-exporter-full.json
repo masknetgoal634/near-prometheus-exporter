@@ -780,7 +780,8 @@
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "textMode": "auto"
       },
       "pluginVersion": "7.0.3",
       "targets": [
@@ -844,7 +845,7 @@
       "pluginVersion": "7.0.3",
       "targets": [
         {
-          "expr": "validator_active_total",
+          "expr": "near_validator_active_total",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -943,7 +944,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(peer_data_received_bytes[5m])",
+          "expr": "rate(near_peer_data_received_bytes[5m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
