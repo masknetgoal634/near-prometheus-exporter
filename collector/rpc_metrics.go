@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"fmt"
 	"strconv"
 
 	nearapi "github.com/masknetgoal634/near-exporter/client"
@@ -98,7 +97,7 @@ func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics
 		prevEpochKickoutDesc: prometheus.NewDesc(
 			"near_prev_epoch_kickout",
 			"Near previous epoch kicked out validators",
-			[]string{"account_id", "reason", "produced", "expected", "stake_u128", "threshold_u128"},
+			[]string{"account_id", "reason"},
 			nil,
 		),
 	}
@@ -194,24 +193,6 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	for _, v := range r.Validators.PrevEpochKickOut {
-		if _, ok := v.Reason["DidNotGetASeat"]; ok {
-			ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue, 0, v.AccountId, "DidNotGetASeat", "", "", "", "")
-
-		} else if reason, ok := v.Reason["NotEnoughStake"]; ok {
-			if threshold, ok2 := reason["threshold_u128"]; ok2 {
-				// set seat price if we have "threshold_u128"
-				seatPrice = GetStakeFromString(threshold.(string))
-			}
-			if stake, ok2 := reason["stake_u128"]; ok2 {
-				ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue,
-					GetStakeFromString(stake.(string)), v.AccountId, "NotEnoughStake", "", "", stake.(string), reason["threshold_u128"].(string))
-			}
-
-		} else if val, ok := v.Reason["NotEnoughBlocks"]; ok {
-			if produced, ok2 := val["produced"]; ok2 {
-				ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue,
-					float64(produced.(float64)), v.AccountId, "NotEnoughBlocks", fmt.Sprintf("%v", produced.(float64)), fmt.Sprintf("%v", val["expected"].(float64)), "", "")
-			}
-		}
+		ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue, 0, v.AccountId, v.Reason)
 	}
 }
