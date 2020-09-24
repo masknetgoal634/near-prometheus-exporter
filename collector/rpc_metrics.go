@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"fmt"
 	"strconv"
 
 	nearapi "github.com/masknetgoal634/near-exporter/client"
@@ -193,6 +194,6 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	for _, v := range r.Validators.PrevEpochKickOut {
-		ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue, 0, v.AccountId, v.Reason)
+		ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue, 0, v.AccountId, fmt.Sprintf("%v", v.Reason))
 	}
 }

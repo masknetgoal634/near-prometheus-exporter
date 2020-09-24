@@ -54,8 +54,8 @@ type ValidatorsResult struct {
 		} `json:"current_proposals"`
 		EpochStartHeight int64 `json:"epoch_start_height"`
 		PrevEpochKickOut []struct {
-			AccountId string `json:"account_id"`
-			Reason    string `json:"reason"`
+			AccountId string      `json:"account_id"`
+			Reason    interface{} `json:"reason"`
 		} `json:"prev_epoch_kickout"`
 	} `json:"result_validators"`
 }
