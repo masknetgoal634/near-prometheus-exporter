@@ -10,13 +10,15 @@ import (
 
 type NodeRpcMetrics struct {
 	accountId                 string
-	client                    *nearapi.Client
+	internalClient            *nearapi.Client
+	externalClient            *nearapi.Client
 	epochBlockBroducedDesc    *prometheus.Desc
 	epochBlockExpectedDesc    *prometheus.Desc
 	seatPriceDesc             *prometheus.Desc
 	currentStakeDesc          *prometheus.Desc
 	epochStartHeightDesc      *prometheus.Desc
 	blockNumberDesc           *prometheus.Desc
+	blockLagDesc              *prometheus.Desc
 	syncingDesc               *prometheus.Desc
 	versionBuildDesc          *prometheus.Desc
 	currentValidatorStakeDesc *prometheus.Desc
@@ -25,10 +27,15 @@ type NodeRpcMetrics struct {
 	currentProposalsDesc      *prometheus.Desc
 }
 
-func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics {
+func NewNodeRpcMetrics(
+	internalClient *nearapi.Client,
+	externalClient *nearapi.Client,
+	accountId string) *NodeRpcMetrics {
+
 	return &NodeRpcMetrics{
-		accountId: accountId,
-		client:    client,
+		accountId:      accountId,
+		internalClient: internalClient,
+		externalClient: externalClient,
 		epochBlockBroducedDesc: prometheus.NewDesc(
 			"near_epoch_block_produced_number",
 			"The number of block produced in epoch",
@@ -59,9 +66,9 @@ func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics
 			nil,
 			nil,
 		),
-		blockNumberDesc: prometheus.NewDesc(
-			"near_block_number",
-			"The number of most recent block",
+		blockLagDesc: prometheus.NewDesc(
+			"near_block_lag",
+			"The number of blocks behind rpc endpoint block head.",
 			nil,
 			nil,
 		),
@@ -111,6 +118,7 @@ func (collector *NodeRpcMetrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.currentStakeDesc
 	ch <- collector.epochStartHeightDesc
 	ch <- collector.blockNumberDesc
+	ch <- collector.blockLagDesc
 	ch <- collector.syncingDesc
 	ch <- collector.versionBuildDesc
 	ch <- collector.currentValidatorStakeDesc
@@ -120,11 +128,18 @@ func (collector *NodeRpcMetrics) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
-	sr, err := collector.client.Get("status", nil)
+	sr, err := collector.internalClient.Get("status", nil)
 	if err != nil {
 		ch <- prometheus.NewInvalidMetric(collector.versionBuildDesc, err)
 		return
 	}
+
+	srExt, err := collector.externalClient.Get("status", nil)
+	if err != nil {
+		ch <- prometheus.NewInvalidMetric(collector.versionBuildDesc, err)
+		return
+	}
+
 	syn := sr.Status.SyncInfo.Syncing
 	var isSyncing int
 	if syn {
@@ -137,10 +152,13 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	blockHeight := sr.Status.SyncInfo.LatestBlockHeight
 	ch <- prometheus.MustNewConstMetric(collector.blockNumberDesc, prometheus.GaugeValue, float64(blockHeight))
 
+	blockLag := srExt.Status.SyncInfo.LatestBlockHeight - sr.Status.SyncInfo.LatestBlockHeight
+	ch <- prometheus.MustNewConstMetric(collector.blockLagDesc, prometheus.GaugeValue, float64(blockLag))
+
 	versionBuildInt := HashString(sr.Status.Version.Build)
 	ch <- prometheus.MustNewConstMetric(collector.versionBuildDesc, prometheus.GaugeValue, float64(versionBuildInt), sr.Status.Version.Version, sr.Status.Version.Build)
 
-	r, err := collector.client.Get("validators", []uint64{blockHeight})
+	r, err := collector.internalClient.Get("validators", []uint64{blockHeight})
 	if err != nil {
 		ch <- prometheus.NewInvalidMetric(collector.epochBlockBroducedDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.epochBlockExpectedDesc, err)

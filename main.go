@@ -51,7 +51,7 @@ func main() {
 
 	registry := prometheus.NewPedanticRegistry()
 	registry.MustRegister(
-		collector.NewNodeRpcMetrics(client, *accountId),
+		collector.NewNodeRpcMetrics(client, devClient, *accountId),
 		collector.NewDevNodeRpcMetrics(devClient),
 	)
 
