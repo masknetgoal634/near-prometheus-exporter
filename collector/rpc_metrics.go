@@ -66,6 +66,13 @@ func NewNodeRpcMetrics(
 			nil,
 			nil,
 		),
+
+		blockNumberDesc: prometheus.NewDesc(
+			"block_number",
+			"The head of the NEAR chain",
+			nil,
+			nil,
+		),
 		blockLagDesc: prometheus.NewDesc(
 			"near_block_lag",
 			"The number of blocks behind rpc endpoint block head.",
