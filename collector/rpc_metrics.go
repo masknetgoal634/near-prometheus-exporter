@@ -68,7 +68,7 @@ func NewNodeRpcMetrics(
 		),
 
 		blockNumberDesc: prometheus.NewDesc(
-			"block_number",
+			"near_block_number",
 			"The head of the NEAR chain",
 			nil,
 			nil,
