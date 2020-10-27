@@ -159,6 +159,8 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	blockHeight := sr.Status.SyncInfo.LatestBlockHeight
 	ch <- prometheus.MustNewConstMetric(collector.blockNumberDesc, prometheus.GaugeValue, float64(blockHeight))
 
+	fmt.Printf("External BlockHeght: %d", srExt.Status.SyncInfo.LatestBlockHeight)
+	fmt.Printf("Internal BlockHeght: %d", sr.Status.SyncInfo.LatestBlockHeight)
 	blockLag := srExt.Status.SyncInfo.LatestBlockHeight - sr.Status.SyncInfo.LatestBlockHeight
 	ch <- prometheus.MustNewConstMetric(collector.blockLagDesc, prometheus.GaugeValue, float64(blockLag))
 
