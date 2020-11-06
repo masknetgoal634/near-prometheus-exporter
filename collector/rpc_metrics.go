@@ -17,7 +17,7 @@ type NodeRpcMetrics struct {
 	seatPriceDesc             *prometheus.Desc
 	currentStakeDesc          *prometheus.Desc
 	epochStartHeightDesc      *prometheus.Desc
-	blockNumberDesc           *prometheus.Desc
+	blockHeightInternalDesc   *prometheus.Desc
 	blockLagDesc              *prometheus.Desc
 	blocksMissedDesc          *prometheus.Desc
 	syncingDesc               *prometheus.Desc
@@ -67,9 +67,8 @@ func NewNodeRpcMetrics(
 			nil,
 			nil,
 		),
-
-		blockNumberDesc: prometheus.NewDesc(
-			"near_block_number",
+		blockHeightInternalDesc: prometheus.NewDesc(
+			"near_internal_block_height",
 			"The head of the NEAR chain",
 			nil,
 			nil,
@@ -131,7 +130,7 @@ func (collector *NodeRpcMetrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.seatPriceDesc
 	ch <- collector.currentStakeDesc
 	ch <- collector.epochStartHeightDesc
-	ch <- collector.blockNumberDesc
+	ch <- collector.blockHeightInternalDesc
 	ch <- collector.blockLagDesc
 	ch <- collector.blocksMissedDesc
 	ch <- collector.syncingDesc
@@ -166,7 +165,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(collector.syncingDesc, prometheus.GaugeValue, float64(isSyncing))
 
 	blockHeight := sr.Status.SyncInfo.LatestBlockHeight
-	ch <- prometheus.MustNewConstMetric(collector.blockNumberDesc, prometheus.GaugeValue, float64(blockHeight))
+	ch <- prometheus.MustNewConstMetric(collector.blockHeightInternalDesc, prometheus.GaugeValue, float64(blockHeight))
 
 	fmt.Printf("External BlockHeght: %d", srExt.Status.SyncInfo.LatestBlockHeight)
 	fmt.Printf("Internal BlockHeght: %d", sr.Status.SyncInfo.LatestBlockHeight)
@@ -183,7 +182,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.NewInvalidMetric(collector.seatPriceDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.currentStakeDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.epochStartHeightDesc, err)
-		ch <- prometheus.NewInvalidMetric(collector.blockNumberDesc, err)
+		ch <- prometheus.NewInvalidMetric(collector.blockHeightInternalDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.blocksMissedDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.syncingDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.versionBuildDesc, err)
