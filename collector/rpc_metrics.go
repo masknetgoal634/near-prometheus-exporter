@@ -67,8 +67,14 @@ func NewNodeRpcMetrics(
 			nil,
 			nil,
 		),
+		blockHeightExternalDesc: prometheus.NewDesc(
+			"near_block_height_external",
+			"The head of the NEAR chain",
+			nil,
+			nil,
+		),
 		blockHeightInternalDesc: prometheus.NewDesc(
-			"near_internal_block_height",
+			"near_block_height_internal",
 			"The head of the NEAR chain",
 			nil,
 			nil,
@@ -164,8 +170,11 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	}
 	ch <- prometheus.MustNewConstMetric(collector.syncingDesc, prometheus.GaugeValue, float64(isSyncing))
 
-	blockHeight := sr.Status.SyncInfo.LatestBlockHeight
-	ch <- prometheus.MustNewConstMetric(collector.blockHeightInternalDesc, prometheus.GaugeValue, float64(blockHeight))
+	intBlockHeight := sr.Status.SyncInfo.LatestBlockHeight
+	ch <- prometheus.MustNewConstMetric(collector.blockHeightInternalDesc, prometheus.GaugeValue, float64(intBlockHeight))
+
+	extBlockHeight := srExt.Status.SyncInfo.LatestBlockHeight
+	ch <- prometheus.MustNewConstMetric(collector.blockHeightExternalDesc, prometheus.GaugeValue, float64(extBlockHeight))
 
 	fmt.Printf("External BlockHeght: %d", srExt.Status.SyncInfo.LatestBlockHeight)
 	fmt.Printf("Internal BlockHeght: %d", sr.Status.SyncInfo.LatestBlockHeight)
@@ -182,6 +191,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.NewInvalidMetric(collector.seatPriceDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.currentStakeDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.epochStartHeightDesc, err)
+		ch <- prometheus.NewInvalidMetric(collector.blockHeightExternalDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.blockHeightInternalDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.blocksMissedDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.syncingDesc, err)
