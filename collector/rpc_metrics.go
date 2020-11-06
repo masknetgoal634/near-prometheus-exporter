@@ -17,6 +17,7 @@ type NodeRpcMetrics struct {
 	seatPriceDesc             *prometheus.Desc
 	currentStakeDesc          *prometheus.Desc
 	epochStartHeightDesc      *prometheus.Desc
+	blockHeightExternalDesc   *prometheus.Desc
 	blockHeightInternalDesc   *prometheus.Desc
 	blockLagDesc              *prometheus.Desc
 	blocksMissedDesc          *prometheus.Desc
