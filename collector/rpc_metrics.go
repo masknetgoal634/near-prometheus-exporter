@@ -137,6 +137,7 @@ func (collector *NodeRpcMetrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.seatPriceDesc
 	ch <- collector.currentStakeDesc
 	ch <- collector.epochStartHeightDesc
+	ch <- collector.blockHeightExternalDesc
 	ch <- collector.blockHeightInternalDesc
 	ch <- collector.blockLagDesc
 	ch <- collector.blocksMissedDesc
