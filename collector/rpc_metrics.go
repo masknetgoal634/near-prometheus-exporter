@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	nearapi "github.com/masknetgoal634/near-exporter/client"
+	nearapi "github.com/bisontrails/near-exporter/client"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -19,7 +19,7 @@ type NodeRpcMetrics struct {
 	epochStartHeightDesc      *prometheus.Desc
 	blockNumberDesc           *prometheus.Desc
 	blockLagDesc              *prometheus.Desc
-	blockMissedDesc              *prometheus.Desc
+	blocksMissedDesc          *prometheus.Desc
 	syncingDesc               *prometheus.Desc
 	versionBuildDesc          *prometheus.Desc
 	currentValidatorStakeDesc *prometheus.Desc

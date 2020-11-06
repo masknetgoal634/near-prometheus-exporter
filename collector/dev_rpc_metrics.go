@@ -3,7 +3,7 @@ package collector
 import (
 	"fmt"
 
-	nearapi "github.com/masknetgoal634/near-exporter/client"
+	nearapi "github.com/bisontrails/near-exporter/client"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
