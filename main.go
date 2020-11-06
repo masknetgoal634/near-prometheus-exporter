@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	nearapi "github.com/masknetgoal634/near-exporter/client"
-	"github.com/masknetgoal634/near-exporter/collector"
+	nearapi "github.com/bisontrails/near-exporter/client"
+	"github.com/bisontrails/near-exporter/collector"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
