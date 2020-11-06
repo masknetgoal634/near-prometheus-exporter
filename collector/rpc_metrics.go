@@ -70,13 +70,13 @@ func NewNodeRpcMetrics(
 		),
 		blockHeightExternalDesc: prometheus.NewDesc(
 			"near_block_height_external",
-			"The head of the NEAR chain",
+			"The head of the NEAR chain according to the external node",
 			nil,
 			nil,
 		),
 		blockHeightInternalDesc: prometheus.NewDesc(
 			"near_block_height_internal",
-			"The head of the NEAR chain",
+			"The head of the NEAR chain according to the internal node",
 			nil,
 			nil,
 		),
@@ -178,9 +178,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	extBlockHeight := srExt.Status.SyncInfo.LatestBlockHeight
 	ch <- prometheus.MustNewConstMetric(collector.blockHeightExternalDesc, prometheus.GaugeValue, float64(extBlockHeight))
 
-	fmt.Printf("External BlockHeght: %d", srExt.Status.SyncInfo.LatestBlockHeight)
-	fmt.Printf("Internal BlockHeght: %d", sr.Status.SyncInfo.LatestBlockHeight)
-	blockLag := srExt.Status.SyncInfo.LatestBlockHeight - sr.Status.SyncInfo.LatestBlockHeight
+	blockLag := extBlockHeight - intBlockHeight
 	ch <- prometheus.MustNewConstMetric(collector.blockLagDesc, prometheus.GaugeValue, float64(blockLag))
 
 	versionBuildInt := HashString(sr.Status.Version.Build)
