@@ -166,12 +166,12 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(collector.syncingDesc, prometheus.GaugeValue, float64(isSyncing))
 
 	blockHeight := sr.Status.SyncInfo.LatestBlockHeight
-	ch <- prometheus.MustNewConstMetric(collector.blockNumberDesc, prometheus.GaugeValue, blockHeight)
+	ch <- prometheus.MustNewConstMetric(collector.blockNumberDesc, prometheus.GaugeValue, float64(blockHeight))
 
 	fmt.Printf("External BlockHeght: %d", srExt.Status.SyncInfo.LatestBlockHeight)
 	fmt.Printf("Internal BlockHeght: %d", sr.Status.SyncInfo.LatestBlockHeight)
 	blockLag := srExt.Status.SyncInfo.LatestBlockHeight - sr.Status.SyncInfo.LatestBlockHeight
-	ch <- prometheus.MustNewConstMetric(collector.blockLagDesc, prometheus.GaugeValue, blockLag)
+	ch <- prometheus.MustNewConstMetric(collector.blockLagDesc, prometheus.GaugeValue, float64(blockLag))
 
 	versionBuildInt := HashString(sr.Status.Version.Build)
 	ch <- prometheus.MustNewConstMetric(collector.versionBuildDesc, prometheus.GaugeValue, float64(versionBuildInt), sr.Status.Version.Version, sr.Status.Version.Build)
