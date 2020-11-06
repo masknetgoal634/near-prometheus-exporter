@@ -19,6 +19,7 @@ type NodeRpcMetrics struct {
 	epochStartHeightDesc      *prometheus.Desc
 	blockNumberDesc           *prometheus.Desc
 	blockLagDesc              *prometheus.Desc
+	blockMissedDesc              *prometheus.Desc
 	syncingDesc               *prometheus.Desc
 	versionBuildDesc          *prometheus.Desc
 	currentValidatorStakeDesc *prometheus.Desc
@@ -79,6 +80,12 @@ func NewNodeRpcMetrics(
 			nil,
 			nil,
 		),
+		blocksMissedDesc: prometheus.NewDesc(
+			"near_blocks_missed",
+			"The number of blocks missed while validating in the active set.",
+			nil,
+			nil,
+		),
 		syncingDesc: prometheus.NewDesc(
 			"near_sync_state",
 			"Sync state",
@@ -126,6 +133,7 @@ func (collector *NodeRpcMetrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.epochStartHeightDesc
 	ch <- collector.blockNumberDesc
 	ch <- collector.blockLagDesc
+	ch <- collector.blocksMissedDesc
 	ch <- collector.syncingDesc
 	ch <- collector.versionBuildDesc
 	ch <- collector.currentValidatorStakeDesc
@@ -146,6 +154,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.NewInvalidMetric(collector.versionBuildDesc, err)
 		return
 	}
+	
 
 	syn := sr.Status.SyncInfo.Syncing
 	var isSyncing int
@@ -157,12 +166,12 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(collector.syncingDesc, prometheus.GaugeValue, float64(isSyncing))
 
 	blockHeight := sr.Status.SyncInfo.LatestBlockHeight
-	ch <- prometheus.MustNewConstMetric(collector.blockNumberDesc, prometheus.GaugeValue, float64(blockHeight))
+	ch <- prometheus.MustNewConstMetric(collector.blockNumberDesc, prometheus.GaugeValue, blockHeight)
 
 	fmt.Printf("External BlockHeght: %d", srExt.Status.SyncInfo.LatestBlockHeight)
 	fmt.Printf("Internal BlockHeght: %d", sr.Status.SyncInfo.LatestBlockHeight)
 	blockLag := srExt.Status.SyncInfo.LatestBlockHeight - sr.Status.SyncInfo.LatestBlockHeight
-	ch <- prometheus.MustNewConstMetric(collector.blockLagDesc, prometheus.GaugeValue, float64(blockLag))
+	ch <- prometheus.MustNewConstMetric(collector.blockLagDesc, prometheus.GaugeValue, blockLag)
 
 	versionBuildInt := HashString(sr.Status.Version.Build)
 	ch <- prometheus.MustNewConstMetric(collector.versionBuildDesc, prometheus.GaugeValue, float64(versionBuildInt), sr.Status.Version.Version, sr.Status.Version.Build)
@@ -175,6 +184,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.NewInvalidMetric(collector.currentStakeDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.epochStartHeightDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.blockNumberDesc, err)
+		ch <- prometheus.NewInvalidMetric(collector.blocksMissedDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.syncingDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.versionBuildDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.currentValidatorStakeDesc, err)
@@ -207,6 +217,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	}
 	ch <- prometheus.MustNewConstMetric(collector.epochBlockBroducedDesc, prometheus.GaugeValue, pb)
 	ch <- prometheus.MustNewConstMetric(collector.epochBlockExpectedDesc, prometheus.GaugeValue, eb)
+	ch <- prometheus.MustNewConstMetric(collector.blocksMissedDesc, prometheus.GaugeValue, eb - pb)
 	ch <- prometheus.MustNewConstMetric(collector.seatPriceDesc, prometheus.GaugeValue, seatPrice)
 	ch <- prometheus.MustNewConstMetric(collector.currentStakeDesc, prometheus.GaugeValue, currentStake)
 
