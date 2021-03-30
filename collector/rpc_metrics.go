@@ -140,7 +140,7 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	versionBuildInt := HashString(sr.Status.Version.Build)
 	ch <- prometheus.MustNewConstMetric(collector.versionBuildDesc, prometheus.GaugeValue, float64(versionBuildInt), sr.Status.Version.Version, sr.Status.Version.Build)
 
-	r, err := collector.client.Get("validators", []uint64{blockHeight})
+	r, err := collector.client.Get("validators", "latest")
 	if err != nil {
 		ch <- prometheus.NewInvalidMetric(collector.epochBlockBroducedDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.epochBlockExpectedDesc, err)
