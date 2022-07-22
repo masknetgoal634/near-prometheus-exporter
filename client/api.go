@@ -44,6 +44,8 @@ type ValidatorsResult struct {
 			Shards            []int `json:"shards"`
 			NumProducedBlocks int64 `json:"num_produced_blocks"`
 			NumExpectedBlocks int64 `json:"num_expected_blocks"`
+			NumProducedChunks int64 `json:"num_produced_chunks"`
+			NumExpectedChunks int64 `json:"num_expected_chunks"`
 		} `json:"current_validators"`
 		NextValidators []struct {
 			Validator
