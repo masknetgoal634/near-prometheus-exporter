@@ -94,7 +94,7 @@ func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics
 		currentValidatorStakeDesc: prometheus.NewDesc(
 			"near_current_validator_stake",
 			"Current amount of validator stake",
-			[]string{"account_id", "slashed", "num_produced_blocks", "num_expected_blocks", "num_produced_chunks", "num_expected_chunks", "public_key", "shards"},
+			[]string{"account_id", "public_key", "slashed", "shards", "num_produced_blocks", "num_expected_blocks", "num_produced_chunks", "num_expected_chunks"},
 			nil,
 		),
 		nextValidatorStakeDesc: prometheus.NewDesc(
