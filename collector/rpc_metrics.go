@@ -11,8 +11,10 @@ import (
 type NodeRpcMetrics struct {
 	accountId                 string
 	client                    *nearapi.Client
-	epochBlockBroducedDesc    *prometheus.Desc
+	epochBlockProducedDesc    *prometheus.Desc
 	epochBlockExpectedDesc    *prometheus.Desc
+	epochChunksProducedDesc    *prometheus.Desc
+	epochChunksExpectedDesc    *prometheus.Desc
 	seatPriceDesc             *prometheus.Desc
 	currentStakeDesc          *prometheus.Desc
 	epochStartHeightDesc      *prometheus.Desc
@@ -29,7 +31,7 @@ func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics
 	return &NodeRpcMetrics{
 		accountId: accountId,
 		client:    client,
-		epochBlockBroducedDesc: prometheus.NewDesc(
+		epochBlockProducedDesc: prometheus.NewDesc(
 			"near_epoch_block_produced_number",
 			"The number of block produced in epoch",
 			nil,
@@ -38,6 +40,18 @@ func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics
 		epochBlockExpectedDesc: prometheus.NewDesc(
 			"near_epoch_block_expected_number",
 			"The number of block expected in epoch",
+			nil,
+			nil,
+		),
+		epochChunksProducedDesc: prometheus.NewDesc(
+			"near_epoch_chunks_produced_number",
+			"The number of chunks produced in epoch",
+			nil,
+			nil,
+		),
+		epochChunksExpectedDesc: prometheus.NewDesc(
+			"near_epoch_chunks_expected_number",
+			"The number of chunks expected in epoch",
 			nil,
 			nil,
 		),
@@ -80,7 +94,7 @@ func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics
 		currentValidatorStakeDesc: prometheus.NewDesc(
 			"near_current_validator_stake",
 			"Current amount of validator stake",
-			[]string{"account_id", "public_key", "slashed", "shards", "num_produced_blocks", "num_expected_blocks"},
+			[]string{"account_id", "public_key", "slashed", "shards", "num_produced_blocks", "num_expected_blocks", "num_produced_chunks", "num_expected_chunks"},
 			nil,
 		),
 		nextValidatorStakeDesc: prometheus.NewDesc(
@@ -105,8 +119,10 @@ func NewNodeRpcMetrics(client *nearapi.Client, accountId string) *NodeRpcMetrics
 }
 
 func (collector *NodeRpcMetrics) Describe(ch chan<- *prometheus.Desc) {
-	ch <- collector.epochBlockBroducedDesc
+	ch <- collector.epochBlockProducedDesc
 	ch <- collector.epochBlockExpectedDesc
+	ch <- collector.epochChunksProducedDesc
+	ch <- collector.epochChunksExpectedDesc
 	ch <- collector.seatPriceDesc
 	ch <- collector.currentStakeDesc
 	ch <- collector.epochStartHeightDesc
@@ -142,8 +158,10 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 
 	r, err := collector.client.Get("validators", "latest")
 	if err != nil {
-		ch <- prometheus.NewInvalidMetric(collector.epochBlockBroducedDesc, err)
+		ch <- prometheus.NewInvalidMetric(collector.epochBlockProducedDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.epochBlockExpectedDesc, err)
+		ch <- prometheus.NewInvalidMetric(collector.epochChunksProducedDesc, err)
+		ch <- prometheus.NewInvalidMetric(collector.epochChunksExpectedDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.seatPriceDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.currentStakeDesc, err)
 		ch <- prometheus.NewInvalidMetric(collector.epochStartHeightDesc, err)
@@ -159,11 +177,22 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 
 	ch <- prometheus.MustNewConstMetric(collector.epochStartHeightDesc, prometheus.GaugeValue, float64(r.Validators.EpochStartHeight))
 
-	var pb, eb, seatPrice, currentStake float64
+	var pb, eb, ec, pc, seatPrice, currentStake float64
 	for _, v := range r.Validators.CurrentValidators {
 
-		ch <- prometheus.MustNewConstMetric(collector.currentValidatorStakeDesc, prometheus.GaugeValue,
-			float64(GetStakeFromString(v.Stake)), v.AccountId, v.PublicKey, strconv.FormatBool(v.IsSlashed), strconv.Itoa(len(v.Shards)), strconv.Itoa(int(v.NumProducedBlocks)), strconv.Itoa(int(v.NumExpectedBlocks)))
+		ch <- prometheus.MustNewConstMetric(
+			collector.currentValidatorStakeDesc,
+			prometheus.GaugeValue,
+			float64(GetStakeFromString(v.Stake)),
+			v.AccountId,
+			v.PublicKey,
+			strconv.FormatBool(v.IsSlashed),
+			strconv.Itoa(len(v.Shards)),
+			strconv.Itoa(int(v.NumProducedBlocks)),
+			strconv.Itoa(int(v.NumExpectedBlocks)),
+			strconv.Itoa(int(v.NumProducedChunks)),
+			strconv.Itoa(int(v.NumExpectedChunks)),
+		)
 
 		t := GetStakeFromString(v.Stake)
 		if seatPrice == 0 {
@@ -175,11 +204,15 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 		if v.AccountId == collector.accountId {
 			pb = float64(v.NumProducedBlocks)
 			eb = float64(v.NumExpectedBlocks)
+			pc = float64(v.NumProducedChunks)
+			ec = float64(v.NumExpectedChunks)
 			currentStake = t
 		}
 	}
-	ch <- prometheus.MustNewConstMetric(collector.epochBlockBroducedDesc, prometheus.GaugeValue, pb)
+	ch <- prometheus.MustNewConstMetric(collector.epochBlockProducedDesc, prometheus.GaugeValue, pb)
 	ch <- prometheus.MustNewConstMetric(collector.epochBlockExpectedDesc, prometheus.GaugeValue, eb)
+	ch <- prometheus.MustNewConstMetric(collector.epochChunksProducedDesc, prometheus.GaugeValue, pc)
+	ch <- prometheus.MustNewConstMetric(collector.epochChunksExpectedDesc, prometheus.GaugeValue, ec)
 	ch <- prometheus.MustNewConstMetric(collector.seatPriceDesc, prometheus.GaugeValue, seatPrice)
 	ch <- prometheus.MustNewConstMetric(collector.currentStakeDesc, prometheus.GaugeValue, currentStake)
 
