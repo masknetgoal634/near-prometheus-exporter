@@ -13,7 +13,7 @@ jobs:
         run: docker build . --file Dockerfile --tag near-prometheus-exporter:latest
 
       - name: Publish to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: elgohr/Publish-Docker-Github-Action@v5
         with:
           name: masknetgoal634/near-prometheus-exporter
           username: ${{ secrets.DOCKER_USERNAME }}
