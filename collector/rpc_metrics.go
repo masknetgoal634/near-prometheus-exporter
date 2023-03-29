@@ -179,20 +179,21 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 
 	var pb, eb, ec, pc, seatPrice, currentStake float64
 	for _, v := range r.Validators.CurrentValidators {
-
-		ch <- prometheus.MustNewConstMetric(
-			collector.currentValidatorStakeDesc,
-			prometheus.GaugeValue,
-			float64(GetStakeFromString(v.Stake)),
-			v.AccountId,
-			v.PublicKey,
-			strconv.FormatBool(v.IsSlashed),
-			strconv.Itoa(len(v.Shards)),
-			strconv.Itoa(int(v.NumProducedBlocks)),
-			strconv.Itoa(int(v.NumExpectedBlocks)),
-			strconv.Itoa(int(v.NumProducedChunks)),
-			strconv.Itoa(int(v.NumExpectedChunks)),
-		)
+		if v.AccountId == collector.accountId {
+		  ch <- prometheus.MustNewConstMetric(
+		  	collector.currentValidatorStakeDesc,
+		  	prometheus.GaugeValue,
+		  	float64(GetStakeFromString(v.Stake)),
+		  	v.AccountId,
+		  	v.PublicKey,
+		  	strconv.FormatBool(v.IsSlashed),
+		  	strconv.Itoa(len(v.Shards)),
+		  	strconv.Itoa(int(v.NumProducedBlocks)),
+		  	strconv.Itoa(int(v.NumExpectedBlocks)),
+		  	strconv.Itoa(int(v.NumProducedChunks)),
+		  	strconv.Itoa(int(v.NumExpectedChunks)),
+		  )
+		}
 
 		t := GetStakeFromString(v.Stake)
 		if seatPrice == 0 {
@@ -217,16 +218,22 @@ func (collector *NodeRpcMetrics) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(collector.currentStakeDesc, prometheus.GaugeValue, currentStake)
 
 	for _, v := range r.Validators.NextValidators {
-		ch <- prometheus.MustNewConstMetric(collector.nextValidatorStakeDesc, prometheus.GaugeValue,
-			float64(GetStakeFromString(v.Stake)), v.AccountId, v.PublicKey, strconv.Itoa(len(v.Shards)))
+		if v.AccountId == collector.accountId {
+			ch <- prometheus.MustNewConstMetric(collector.nextValidatorStakeDesc, prometheus.GaugeValue,
+				float64(GetStakeFromString(v.Stake)), v.AccountId, v.PublicKey, strconv.Itoa(len(v.Shards)))
+		}
 	}
 
 	for _, v := range r.Validators.CurrentProposals {
-		ch <- prometheus.MustNewConstMetric(collector.currentProposalsDesc, prometheus.GaugeValue,
-			float64(GetStakeFromString(v.Stake)), v.AccountId, v.PublicKey)
+		if v.AccountId == collector.accountId {
+			ch <- prometheus.MustNewConstMetric(collector.currentProposalsDesc, prometheus.GaugeValue,
+				float64(GetStakeFromString(v.Stake)), v.AccountId, v.PublicKey)
+		}
 	}
 
 	for _, v := range r.Validators.PrevEpochKickOut {
-		ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue, 0, v.AccountId, fmt.Sprintf("%v", v.Reason))
+		if v.AccountId == collector.accountId {
+			ch <- prometheus.MustNewConstMetric(collector.prevEpochKickoutDesc, prometheus.GaugeValue, 0, v.AccountId, fmt.Sprintf("%v", v.Reason))
+		}
 	}
 }
